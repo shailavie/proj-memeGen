@@ -6,16 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Meme Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/editor.css">
 </head>
 
 <body onload="init()">
-    <!-- </body>onmousemove="onCheckMousePos(event)"> -->
     <div id="app" class="grid justify-center">
         <header class="app-header">
             <h1>Meme Generator</h1>
             <h5>Do It Yourself!</h5>
         </header>
+
         <!-- controllers -->
         <div class="app-menu">
             <label>✎ Stroke
@@ -32,12 +32,11 @@
                 <option value="rect">▯ Rectangle</option>
             </select>
             <button onclick="onSetRandImage()" class="btn btn-insta-painter">♛ Git Pro ♛</button>
+            <button class="btn btn-primary" onclick="generateMeme()">Generate Meme!</button>
         </div>
 
         <!-- meme container -->
-        <!-- ondrop="drop(event)" ondragover="allowDrop(event)" -->
         <div class="meme-container" id="meme-container" ></div>
-        <button onclick="generateMeme()">Generate Meme!</button>
         <div class="canvas-container" id="canvas-container"></div>
 
         <!-- footer -->

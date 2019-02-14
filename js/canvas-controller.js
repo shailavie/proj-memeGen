@@ -16,14 +16,12 @@ function getRandImg() {
  
 
 function generateMeme() {
-    var elTopLine = document.querySelector('#txt-top-line')
-    var txtPos = elTopLine.getBoundingClientRect();
+    var elTxtTop = document.querySelector('#txt-top-line')
+    var txtTopPos = elTxtTop.getBoundingClientRect();
+    var elTxtBottom = document.querySelector('#txt-bottom-line')
+    var txtBottomPos = elTxtBottom.getBoundingClientRect();
     var elMemeImg = document.querySelector('#meme-img');
     var imgPos = elMemeImg.getBoundingClientRect();
-
-    // console.log('txt top',txtPos.top)
-    // console.log('imgPos top:',imgPos.top)
-    // console.log('txt on img :',txtPos.top-imgPos.top)
     let img = new Image();
     img.src = gMemeImgSrc;
     renderCanvas()
@@ -35,8 +33,9 @@ function generateMeme() {
     gCtx.shadowColor = 'black'
     gCtx.shadowOffsetX = 0;
     gCtx.shadowOffsetY = 0;
-    gCtx.shadowBlur = 10;
-    gCtx.fillText(elTopLine.value, txtPos.left-imgPos.left, txtPos.top-imgPos.top+30);
+    gCtx.shadowBlur = 5;
+    gCtx.fillText(elTxtTop.value, txtTopPos.left-imgPos.left, txtTopPos.top-imgPos.top+30);
+    gCtx.fillText(elTxtBottom.value, txtBottomPos.left-imgPos.left, txtBottomPos.top-imgPos.top+30);
 
 }
 
@@ -49,14 +48,14 @@ function renderCanvas() {
     // console.log('imgHeight: ',imgHeight)
     var strHtml = ''
     strHtml = `
-    <canvas id="canvas" width="${imgWidth}" height="${imgHeight}"></canvas>
+    <canvas id="canvas" width="${imgWidth}" height="${imgHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
     `
     document.querySelector('#canvas-container').innerHTML = strHtml;
 }
 
 
 
-/*
+
 function onMouseMovement(ev) {
     var x = ev.offsetX;
     var y = ev.offsetY;
@@ -158,4 +157,3 @@ function onCheckMousePos(ev) {
 function onChooseDrawTool(tool) {
     gTool = tool;
 }
-*/

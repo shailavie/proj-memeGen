@@ -11,36 +11,14 @@ function init() {
 function renderEditor(){
     var strHtml = ''
     strHtml = `
-    <input contenteditable="true" class="txt" type="text" onmousedown="dragElement(this)" id="txt-top-line" placeholder="shai">
+    <input contentEditable="true" class="txt txt-top" type="text" onmousedown="dragElement(this)" id="txt-top-line" value="top line" placeholder="top line">
     <img class="img-container" id="meme-img" onmousedown="dragElement(this)" src="${gMemeImgSrc}" alt="">
+    <input contentEditable="true" class="txt txt-bottom" type="text" onmousedown="dragElement(this)" id="txt-bottom-line" value="bottom line" placeholder="bottom line">
     `
     document.querySelector('.meme-container').innerHTML = strHtml;
 }
+ 
 
-// draggable="true" ondragstart="drag(event)"
-/*
-function allowDrop(ev) {
-    ev.preventDefault();
-  }
-  
-  function drag(ev) {
-      console.log('potato!')
-      console.log(ev)
-    ev.dataTransfer.setData("Text", ev.target.id);
-  }
-  
-  function drop(ev) {
-    console.log('potato!')
-    console.log(ev)
-    var data = ev.dataTransfer.getData("Text");
-    ev.target.appendChild(document.getElementById(data));
-    ev.preventDefault();
-  }
-  */
-
-
-      //Make the DIV element draggagle:
-// dragElement(document.querySelector('#txt-top-line'));
 
 function dragElement(elmnt) {
   
