@@ -18,40 +18,44 @@
 
         <!-- controllers -->
         <div class="app-menu">
-            <label>✎ Stroke
-                <input type="color" class="draw-color" onchange="onColorChange(this.value, 'stroke')">
-            </label>
-            <label>✎ Filler
-                <input type="color" class="draw-color" onchange="onColorChange(this.value, 'fill')">
-            </label>
-            <button onclick="onResetCanvas()" class="btn btn-reset">Reset</button>
-            <button onclick="onToggleEraser()" class="btn btn-eraser">⌫</button>
-            <select onchange="onChooseDrawTool(this.value)">
-                <option value="pencil">✏ Pencil</option>
-                <option value="brush">▆ Brush</option>
-                <option value="rect">▯ Rectangle</option>
-            </select>
-            <button onclick="onSetRandImage()" class="btn btn-insta-painter">♛ Git Pro ♛</button>
+            <div class="canvas-controls hide">
+                <label>✎ Stroke
+                    <input type="color" class="draw-color" onchange="onColorChange(this.value, 'stroke')">
+                </label>
+                <label>✎ Filler
+                    <input type="color" class="draw-color" onchange="onColorChange(this.value, 'fill')">
+                </label>
+                <button onclick="onResetCanvas()" class="btn btn-reset">Reset</button>
+                <button onclick="onToggleEraser()" class="btn btn-eraser">⌫</button>
+                <select onchange="onChooseDrawTool(this.value)">
+                    <option value="pencil">✏ Pencil</option>
+                    <option value="brush">▆ Brush</option>
+                    <option value="rect">▯ Rectangle</option>
+                </select>
+                <button onclick="onSetRandImage()" class="btn btn-insta-painter">♛ Git Pro ♛</button>
+            </div>
             <button class="btn btn-primary" onclick="generateMeme()">Generate Meme!</button>
+            <button onclick="window.location.href='index.html'">Change Image</button>
         </div>
 
         <!-- meme container -->
-        <div class="meme-container" id="meme-container" ></div>
-        <div class="canvas-container" id="canvas-container"></div>
+        <div class="meme-container" id="meme-container"></div>
+        <div class="canvas-container" id="canvas-container">
+
+        </div>
 
         <!-- footer -->
         <footer class="app-footer">
-            <div class="footer-btn-container">
-                <a onclick="onDownloadImage(this)" class="btn btn-download">Download Your Masterpice</a>
-            </div>
             <h4>WallaYoffiRight &copy; 2019</h4>
         </footer>
     </div>
 
     <script src="js/user-controller.js"></script>
     <script src="js/canvas-controller.js"></script>
+    <script src="js/app-controller.js"></script>
     <script src="js/editor.js"></script>
-    
+
+
 </body>
 
 </html>

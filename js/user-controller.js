@@ -5,4 +5,3 @@ function onDownloadImage(elLink){
     elLink.download = 'my-img.jpg'
 }
 
- 
