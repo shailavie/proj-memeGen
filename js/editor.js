@@ -1,9 +1,8 @@
 'use strict'
 
-// var gMemeImgSrc = 'img/success.jpg';
-// var gMemeImgSrc = getRandImg();
-// var gMemeImgSrc = getImgSrc();
-// console.log('src', gMemeImgSrc);
+
+var gMemeImgSrc = getImgId()
+
 
 function init() {
     renderEditor();
@@ -14,52 +13,24 @@ function init() {
 function renderEditor(){
     var strHtml = ''
     strHtml = `
-    <input contenteditable="true" class="txt" type="text" onmousedown="dragElement(this)" id="txt-top-line" placeholder="shai">
+    <input contentEditable="true" class="txt txt-top" type="text" onmousedown="dragElement(this)" id="txt-top-line" value="top line" placeholder="top line">
     <img class="img-container" id="meme-img" onmousedown="dragElement(this)" src="${gMemeImgSrc}" alt="">
+    <input contentEditable="true" class="txt txt-bottom" type="text" onmousedown="dragElement(this)" id="txt-bottom-line" value="bottom line" placeholder="bottom line">
     `
     document.querySelector('.meme-container').innerHTML = strHtml;
 }
+ 
 
-// draggable="true" ondragstart="drag(event)"
-/*
-function allowDrop(ev) {
-    ev.preventDefault();
-  }
-  
-  function drag(ev) {
-      console.log('potato!')
-      console.log(ev)
-    ev.dataTransfer.setData("Text", ev.target.id);
-  }
-  
-  function drop(ev) {
-    console.log('potato!')
-    console.log(ev)
-    var data = ev.dataTransfer.getData("Text");
-    ev.target.appendChild(document.getElementById(data));
-    ev.preventDefault();
-  }
-  */
-
-
-      //Make the DIV element draggagle:
-// dragElement(document.querySelector('#txt-top-line'));
 
 function dragElement(elmnt) {
   
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  if (document.getElementById(elmnt)) {
-    /* if present, the header is where you move the DIV from:*/
-    document.getElementById(elmnt).onmousedown = dragMouseDown;
-  } else {
-    /* otherwise, move the DIV from anywhere inside the DIV:*/
-    elmnt.onmousedown = dragMouseDown;
-  }
-  
+  elmnt.onmousedown = dragMouseDown;
 
   function dragMouseDown(e) {
     e = e || window.event;
-    e.preventDefault();
+    // e.preventDefault(); 
+
     // get the mouse cursor position at startup:
     pos3 = e.clientX;
     pos4 = e.clientY;

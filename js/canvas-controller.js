@@ -1,9 +1,11 @@
 'use strict';
-var gCanvas; 
+var gCanvas;
 var gCtx;
 var gIsDrawing = false;
 var gIsErasing = false;
 var gTool = 'pencil';
+
+
 
 
 function getRandImg() {
@@ -13,30 +15,35 @@ function getRandImg() {
     return `img/${rand}.jpg`;
 }
 
- 
+function getImgId() {
+    var url = window.location.href;
+    var params = url.split('?');
+    var id = params[1]
+    return `img/${id}.jpg`;
+}
+
 
 function generateMeme() {
-    var elTopLine = document.querySelector('#txt-top-line')
-    var txtPos = elTopLine.getBoundingClientRect();
+    var elTxtTop = document.querySelector('#txt-top-line')
+    var txtTopPos = elTxtTop.getBoundingClientRect();
+    var elTxtBottom = document.querySelector('#txt-bottom-line')
+    var txtBottomPos = elTxtBottom.getBoundingClientRect();
     var elMemeImg = document.querySelector('#meme-img');
     var imgPos = elMemeImg.getBoundingClientRect();
-
-    // console.log('txt top',txtPos.top)
-    // console.log('imgPos top:',imgPos.top)
-    // console.log('txt on img :',txtPos.top-imgPos.top)
     let img = new Image();
     img.src = gMemeImgSrc;
     renderCanvas()
     gCanvas = document.querySelector('#canvas');
-    gCtx = gCanvas.getContext('2d');
+    gCtx = gCanvas.getContext('2d')
     gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
     gCtx.font = "30px Impact";
     gCtx.fillStyle = 'white'
     gCtx.shadowColor = 'black'
     gCtx.shadowOffsetX = 0;
     gCtx.shadowOffsetY = 0;
-    gCtx.shadowBlur = 10;
-    gCtx.fillText(elTopLine.value, txtPos.left-imgPos.left, txtPos.top-imgPos.top+30);
+    gCtx.shadowBlur = 5;
+    gCtx.fillText(elTxtTop.value, txtTopPos.left - imgPos.left, txtTopPos.top - imgPos.top + 30);
+    gCtx.fillText(elTxtBottom.value, txtBottomPos.left - imgPos.left, txtBottomPos.top - imgPos.top + 30);
 
 }
 
@@ -45,18 +52,22 @@ function renderCanvas() {
     var elImg = document.querySelector('#meme-img')
     var imgWidth = elImg.clientWidth;
     var imgHeight = elImg.clientHeight;
+    var imgTrueWidth = elImg.width;
+    var imgTrueHeight = elImg.height;
     // console.log('imgWidth: ',imgWidth)
     // console.log('imgHeight: ',imgHeight)
     var strHtml = ''
     strHtml = `
-    <canvas id="canvas" width="${imgWidth}" height="${imgHeight}"></canvas>
+    <canvas id="canvas" width="${imgWidth}" height="${imgHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
+    <canvas id="canvas-to-download" width="${imgTrueWidth}" height="${imgTrueHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
+    <div class="footer-btn-container"><a onclick="onDownloadImage(this)" class="btn btn-download">Download Your Masterpice</a></div>
     `
     document.querySelector('#canvas-container').innerHTML = strHtml;
 }
 
 
 
-/*
+
 function onMouseMovement(ev) {
     var x = ev.offsetX;
     var y = ev.offsetY;
@@ -158,4 +169,3 @@ function onCheckMousePos(ev) {
 function onChooseDrawTool(tool) {
     gTool = tool;
 }
-*/

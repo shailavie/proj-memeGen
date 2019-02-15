@@ -7,7 +7,7 @@ function renderGallery() {
     let elGallery = $('.gallery-container');
     let strHtml = '';
     gImgs.map(function (img) {
-        strHtml += `<a href="editor.html"><img onclick=onSaveImgSrc('${img.url}') src="${img.url}" alt=""></a>`;
+        strHtml += `<a href="editor.html?${img.id}"><img onclick=onSaveImgSrc(${img.id}) src="${img.url}" alt=""></a>`;
         // strHtml += `<img onclick="onSaveImgSrc('${img.url}')" src="${img.url}" alt="" >`;
     })
     $(elGallery).html(strHtml);
