@@ -12,6 +12,7 @@ var gMeme = {
       left: 0,
       top: 0,
       size: 40,
+      width: getTextWidth(this.line, `${this.size}px ${this.font}`),
       align: 'left',
       color: 'white',
       strokeColor: 'black',
@@ -23,6 +24,7 @@ var gMeme = {
       left: 0,
       top: 0,
       size: 40,
+      width: getTextWidth(this.line, `${this.size}px ${this.font}`),
       align: 'left',
       color: 'white',
       strokeColor: 'black',
@@ -70,15 +72,16 @@ function renderLines() {
              ontouchstart="dragElementMobile(this)"
              onchange="updateLineTxt(this)"
              id="${line.id}"
-             value = "${line.line}"
-             placeholder = "Enter Text"
-             style = "text-align:center; width: 200px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
+             value = ""
+             placeholder = "${line.line}" | "Enter Text"
+             style = "text-align:center; width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
              >
              `
   })
   document.querySelector('.meme-container').innerHTML += strHtml;
 }
 
+// style = "text-align:center; width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
 
 // This function renders a canvas in the exact dimensions of the given DOM image, and strokes all given lines at their respective position
 function generateMeme() {
@@ -101,10 +104,14 @@ function getLinesPosByImgSize() {
   var imgPos = img.getBoundingClientRect();
   var imgWidth = imgPos.width
   var imgHeight = imgPos.height
-  gMeme.txts[0].top = gMeme.txts[0].size;
-  gMeme.txts[1].top = imgHeight - gMeme.txts[1].size * 2;
-  gMeme.txts[0].left = imgWidth / 2 - 100;
-  gMeme.txts[1].left = imgWidth / 2 - 100;
+  var lineTop = gMeme.txts[0];
+  var lineBot = gMeme.txts[1];
+  lineTop.top = lineTop.size;
+  lineBot.top = imgHeight - lineBot.size * 2;
+  lineTop.width = getTextWidth(lineTop.line, `${lineTop.size}px bold ${lineTop.font}`)
+  lineBot.width = getTextWidth(lineBot.line, `${lineBot.size}px bold ${lineBot.font}`)
+  gMeme.txts[0].left = imgWidth / 2 - lineTop.width / 2;
+  gMeme.txts[1].left = imgWidth / 2 - lineBot.width / 2;
 }
 
 
@@ -146,3 +153,14 @@ function onDownloadImage(elLink) {
   elLink.download = `${name}.jpg`
 }
 
+
+//This function uses a dummy canvas to calculate text measurement
+function getTextWidth(text, font) {
+  // if given, use cached canvas for better performance
+  // else, create new canvas
+  var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+  var ctx = canvas.getContext('2d');
+  ctx.font = font;
+  var metrics = ctx.measureText(text);
+  return metrics.width;
+};

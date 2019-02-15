@@ -5,25 +5,14 @@ var gIsDrawing = false;
 var gIsErasing = false;
 var gTool = 'pencil';
 
- 
-
-
-function onLineInput() {
-
-}
-
-
-function getLinePos() {
-
-}
-
-
 
 
 function drawStroked({ line, size, color, strokeColor, font, left, top }) {
     gCtx.font = `${size}px ${font}`
     gCtx.strokeStyle = strokeColor;
     gCtx.lineWidth = Math.floor(size / 10);
+    console.log('left: ',left)
+    console.log('top:', top)
     gCtx.strokeText(line, left, top + size);
     gCtx.fillStyle = color;
     gCtx.fillText(line, left, top + size);
@@ -34,9 +23,6 @@ function renderCanvas() {
     var elImg = document.querySelector('#meme-img')
     var imgWidth = elImg.clientWidth;
     var imgHeight = elImg.clientHeight;
-    // var imgTrueWidth = elImg.width;
-    // var imgTrueHeight = elImg.height;
-    // <canvas id="canvas-to-download" width="${imgTrueWidth}" height="${imgTrueHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
     var strHtml = ''
     strHtml = `
     <canvas id="canvas" width="${imgWidth}" height="${imgHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
@@ -44,6 +30,13 @@ function renderCanvas() {
     `
     document.querySelector('#canvas-container').innerHTML = strHtml;
 }
+
+//TO DO - Render a TRUE size hidden canvas solely for download purposes 
+// var imgTrueWidth = elImg.width;
+// var imgTrueHeight = elImg.height;
+// <canvas id="canvas-to-download" width="${imgTrueWidth}" height="${imgTrueHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
+
+
 
 
 
