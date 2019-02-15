@@ -11,8 +11,6 @@ function drawStroked({ line, size, color, strokeColor, font, left, top }) {
     gCtx.font = `${size}px ${font}`
     gCtx.strokeStyle = strokeColor;
     gCtx.lineWidth = Math.floor(size / 10);
-    console.log('left: ',left)
-    console.log('top:', top)
     gCtx.strokeText(line, left, top + size);
     gCtx.fillStyle = color;
     gCtx.fillText(line, left, top + size);
@@ -26,10 +24,11 @@ function renderCanvas() {
     var strHtml = ''
     strHtml = `
     <canvas id="canvas" width="${imgWidth}" height="${imgHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
-    <div class="footer-btn-container"><a onclick="onDownloadImage(this)" class="btn btn-download">Download Your Masterpice</a></div>
     `
     document.querySelector('#canvas-container').innerHTML = strHtml;
 }
+
+{/* <div class="footer-btn-container"><a onclick="onDownloadImage(this)" class="btn btn-download">Download Your Masterpice</a></div> */}
 
 //TO DO - Render a TRUE size hidden canvas solely for download purposes 
 // var imgTrueWidth = elImg.width;
@@ -113,26 +112,7 @@ function onColorChange(color, property) {
 function onResetCanvas() {
     gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
 }
-
-function onToggleEraser() {
-    if (!gIsErasing) {
-        gIsErasing = true
-        document.querySelector('.btn-eraser').classList.add('clicked');
-    } else {
-        gIsErasing = false;
-        document.querySelector('.btn-eraser').classList.remove('clicked');
-    }
-}
-
-function onSetRandImage() {
-    let rand = parseInt(Math.random() * 4);
-    let img = new Image();
-    img.src = `./img/${rand}.jpg`;
-    gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-    gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
-}
-
-
+ 
 
 function onCheckMousePos(ev) {
     let targetId = ev.target.id;
