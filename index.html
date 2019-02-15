@@ -3,34 +3,55 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>page title</title>
+    <title>Meme Generator</title>
     <link rel="stylesheet" href="lib/bootstrap/bootstrap.css" />
     <link rel="stylesheet" href="lib/animate/animate.css" />
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/main.css">
-    <!-- <link rel="icon" href="img/icon.png" type="image/gif" sizes="16x16"> -->
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+
 </head>
 
 <body onload="init()">
+    <div class="website-grid grid">
 
-    <header>
-        <h1>Meme Generator</h1>
-        <h2>Choose Meme</h2>
-    </header>
-    <main >
-        <div class="gallery-container grid align-center ">
-            <!-- gllaery goes here -->
-        </div>
-    </main>
-    <footer>
-        
-    </footer>
+        <header>
+            <h1>Meme Generator</h1>
+            <h2>Choose Meme </h2>
+            <div class="searchbox-container">
+                <input onkeypress="onSearchStr()" class="searchBox" type="search" name="search" placeholder="Search...">
+                <label for="search"><i onclick="onSearchStr()" class="fa fa-search searchIcon"></i></label>
+            </div>
+            <!-- <form autocomplete="off" action="/action_page.php">
+                <div class="autocomplete" style="width:300px;">
+                    <input id="myInput" type="text" name="myCountry" placeholder="Country">
+                </div>
+                <input type="submit">
+            </form> -->
+            <form enctype="multipart/form-data" action="/upload/image" method="post">
+                <input id="image-file" type="file" />
+            </form>
+        </header>
+        <aside class="word-cloud-container grid">
+            <!-- fucking word cloud! -->
+        </aside>
+            <main>
+            <div class="gallery-container grid align-center ">
+                <!-- gllaery goes here -->
+            </div>
+        </main>
+        <footer>
 
-    
+        </footer>
+    </div>
+
+
     <!-- <script src="js/util.js"></script> -->
     <script src="lib/jquery/jquery.js"></script>
     <script src="lib/bootstrap/bootstrap.js"></script>
+    <script src="js/editor.js"></script>
     <script src="js/app-controller.js"></script>
+    <!-- <script src="js/autocomplete-service.js"></script> -->
     <script src="js/gallery-service.js"></script>
     <!-- <script src="js/app-service.js"></script> -->
 </body>

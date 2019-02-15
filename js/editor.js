@@ -1,11 +1,14 @@
 'use strict'
 
 // var gMemeImgSrc = 'img/success.jpg';
-var gMemeImgSrc = getRandImg();
+// var gMemeImgSrc = getRandImg();
+// var gMemeImgSrc = getImgSrc();
+// console.log('src', gMemeImgSrc);
 
 function init() {
     renderEditor();
 }
+
 
 
 function renderEditor(){
