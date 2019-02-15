@@ -4,16 +4,57 @@ var gCtx;
 var gIsDrawing = false;
 var gIsErasing = false;
 var gTool = 'pencil';
+var gNextId = 100;
 
-
-
-
-function getRandImg() {
-    let rand = parseInt(Math.random() * 5);
-    // let img = new Image();
-    // return `./img/${rand}.jpg`;
-    return `img/${rand}.jpg`;
+var gImgs = [{ id: 1, url: 'img/popo.jpg', keywords: ['happy'] }];
+var gMeme = {
+    selectedImgId: 5,
+    txts: [
+        {
+            id: getRandId(),
+            line: 'Top Line',
+            left: 40,
+            top: 20,
+            size: 40,
+            align: 'left',
+            color: 'white',
+            strokeColor: 'black',
+            font: 'Impact'
+        },
+        {
+            id: getRandId(),
+            line: 'Bottom Line',
+            left: 40,
+            top: 160,
+            size: 40,
+            align: 'left',
+            color: 'white',
+            strokeColor: 'black',
+            font: 'Impact'
+        }
+    ]
 }
+
+
+function onQaFunc() {
+    calcImgCenter()
+}
+
+function calcImgCenter() {
+    let img = new Image();
+    img.src = gMemeImgSrc;
+    var w = img.width;
+    var wC = img.clientWidth;
+    console.log('w', w)
+    console.log('wc', wC)
+
+    var elImg = document.querySelector('#meme-img')
+    var imgPos = elImg.getBoundingClientRect();
+
+    console.log('elImg', elImg)
+    console.log('imgPos', imgPos)
+}
+
 
 function getImgId() {
     var url = window.location.href;
@@ -22,29 +63,48 @@ function getImgId() {
     return `img/${id}.jpg`;
 }
 
+function onLineInput() {
+
+}
+
+
+function getLinePos() {
+
+}
+
 
 function generateMeme() {
-    var elTxtTop = document.querySelector('#txt-top-line')
-    var txtTopPos = elTxtTop.getBoundingClientRect();
-    var elTxtBottom = document.querySelector('#txt-bottom-line')
-    var txtBottomPos = elTxtBottom.getBoundingClientRect();
-    var elMemeImg = document.querySelector('#meme-img');
-    var imgPos = elMemeImg.getBoundingClientRect();
+    // var elTxtTop = document.querySelector('#txt-top-line')
+    // var txtTopPos = elTxtTop.getBoundingClientRect();
+    // var elTxtBottom = document.querySelector('#txt-bottom-line')
+    // var txtBottomPos = elTxtBottom.getBoundingClientRect();
+    // var elMemeImg = document.querySelector('#meme-img');
+    // var imgPos = elMemeImg.getBoundingClientRect();
     let img = new Image();
     img.src = gMemeImgSrc;
     renderCanvas()
     gCanvas = document.querySelector('#canvas');
     gCtx = gCanvas.getContext('2d')
     gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
-    gCtx.font = "30px Impact";
-    gCtx.fillStyle = 'white'
-    gCtx.shadowColor = 'black'
-    gCtx.shadowOffsetX = 0;
-    gCtx.shadowOffsetY = 0;
-    gCtx.shadowBlur = 5;
-    gCtx.fillText(elTxtTop.value, txtTopPos.left - imgPos.left, txtTopPos.top - imgPos.top + 30);
-    gCtx.fillText(elTxtBottom.value, txtBottomPos.left - imgPos.left, txtBottomPos.top - imgPos.top + 30);
+    drawTheLines()
+}
 
+function drawTheLines() {
+    console.log('potato');
+    var lines = gMeme.txts;
+    lines.forEach(function (line) {
+        drawStroked(line)
+    })
+}
+
+
+function drawStroked({ line, size, color, strokeColor, font, left, top }) {
+    gCtx.font = `${size}px ${font}`
+    gCtx.strokeStyle = strokeColor;
+    gCtx.lineWidth = Math.floor(size / 10);
+    gCtx.strokeText(line, left, top + size);
+    gCtx.fillStyle = color;
+    gCtx.fillText(line, left, top + size);
 }
 
 
@@ -52,14 +112,12 @@ function renderCanvas() {
     var elImg = document.querySelector('#meme-img')
     var imgWidth = elImg.clientWidth;
     var imgHeight = elImg.clientHeight;
-    var imgTrueWidth = elImg.width;
-    var imgTrueHeight = elImg.height;
-    // console.log('imgWidth: ',imgWidth)
-    // console.log('imgHeight: ',imgHeight)
+    // var imgTrueWidth = elImg.width;
+    // var imgTrueHeight = elImg.height;
+    // <canvas id="canvas-to-download" width="${imgTrueWidth}" height="${imgTrueHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
     var strHtml = ''
     strHtml = `
     <canvas id="canvas" width="${imgWidth}" height="${imgHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
-    <canvas id="canvas-to-download" width="${imgTrueWidth}" height="${imgTrueHeight}" onmousedown="onMouseDown(event)" onmouseup="onMouseUp(event)" onmousemove="onMouseMovement(event)"></canvas>
     <div class="footer-btn-container"><a onclick="onDownloadImage(this)" class="btn btn-download">Download Your Masterpice</a></div>
     `
     document.querySelector('#canvas-container').innerHTML = strHtml;
@@ -67,6 +125,9 @@ function renderCanvas() {
 
 
 
+////////////////////////////////
+////// Painting Functions///////
+////////////////////////////////
 
 function onMouseMovement(ev) {
     var x = ev.offsetX;
@@ -169,3 +230,6 @@ function onCheckMousePos(ev) {
 function onChooseDrawTool(tool) {
     gTool = tool;
 }
+
+
+

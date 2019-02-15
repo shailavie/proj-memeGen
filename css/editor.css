@@ -10,6 +10,7 @@
 
 * {
     box-sizing: border-box;
+    margin: 0;
 }
 
 /* App */
@@ -93,14 +94,15 @@
     background-color:transparent;
     border: none;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: 30px;
+    /* font-size: 30px; */
+    width: auto;
     color:white;
     text-shadow:
     -1px -1px 0 #000,
     1px -1px 0 #000,
     -1px 1px 0 #000,
     1px 1px 0 #000;  
-    resize: none;
+    /* resize: none; */
 }
 
 .txt-top {
