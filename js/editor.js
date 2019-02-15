@@ -9,6 +9,7 @@ function init() {
 }
 
 
+
 function renderEditor(){
     var strHtml = ''
     var lines = gMeme.txts;
