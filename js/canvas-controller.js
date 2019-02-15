@@ -4,64 +4,9 @@ var gCtx;
 var gIsDrawing = false;
 var gIsErasing = false;
 var gTool = 'pencil';
-var gNextId = 100;
 
-var gImgs = [{ id: 1, url: 'img/popo.jpg', keywords: ['happy'] }];
-var gMeme = {
-    selectedImgId: 5,
-    txts: [
-        {
-            id: getRandId(),
-            line: 'Top Line',
-            left: 40,
-            top: 20,
-            size: 40,
-            align: 'left',
-            color: 'white',
-            strokeColor: 'black',
-            font: 'Impact'
-        },
-        {
-            id: getRandId(),
-            line: 'Bottom Line',
-            left: 40,
-            top: 160,
-            size: 40,
-            align: 'left',
-            color: 'white',
-            strokeColor: 'black',
-            font: 'Impact'
-        }
-    ]
-}
+ 
 
-
-function onQaFunc() {
-    calcImgCenter()
-}
-
-function calcImgCenter() {
-    let img = new Image();
-    img.src = gMemeImgSrc;
-    var w = img.width;
-    var wC = img.clientWidth;
-    console.log('w', w)
-    console.log('wc', wC)
-
-    var elImg = document.querySelector('#meme-img')
-    var imgPos = elImg.getBoundingClientRect();
-
-    console.log('elImg', elImg)
-    console.log('imgPos', imgPos)
-}
-
-
-function getImgId() {
-    var url = window.location.href;
-    var params = url.split('?');
-    var id = params[1]
-    return `img/${id}.jpg`;
-}
 
 function onLineInput() {
 
@@ -73,29 +18,6 @@ function getLinePos() {
 }
 
 
-function generateMeme() {
-    // var elTxtTop = document.querySelector('#txt-top-line')
-    // var txtTopPos = elTxtTop.getBoundingClientRect();
-    // var elTxtBottom = document.querySelector('#txt-bottom-line')
-    // var txtBottomPos = elTxtBottom.getBoundingClientRect();
-    // var elMemeImg = document.querySelector('#meme-img');
-    // var imgPos = elMemeImg.getBoundingClientRect();
-    let img = new Image();
-    img.src = gMemeImgSrc;
-    renderCanvas()
-    gCanvas = document.querySelector('#canvas');
-    gCtx = gCanvas.getContext('2d')
-    gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
-    drawTheLines()
-}
-
-function drawTheLines() {
-    console.log('potato');
-    var lines = gMeme.txts;
-    lines.forEach(function (line) {
-        drawStroked(line)
-    })
-}
 
 
 function drawStroked({ line, size, color, strokeColor, font, left, top }) {
