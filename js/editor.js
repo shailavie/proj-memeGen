@@ -48,7 +48,7 @@ function init() {
 		setDefaultLinesPos();
 		renderItems();
 		clearTimeout(x);
-	}, 10);
+	}, 100);
 }
 
 //This function gets and imageId from a URL param
@@ -78,7 +78,7 @@ function renderItems() {
 }
 
 
-function renderProps(){
+function renderProps() {
 	var strHtml = ''
 	var props = gMeme.props;
 	props.forEach(function (prop) {
@@ -88,7 +88,7 @@ function renderProps(){
 }
 
 
-function renderLines(){
+function renderLines() {
 	var strHtml = ''
 	var lines = gMeme.txts;
 	lines.forEach(function (line) {
@@ -111,12 +111,14 @@ function getLineStrHtml(line) {
              id="${line.id}"
              value = ""
              placeholder = "${line.line}" 
-             style = "text-align:${line.align}; color:${line.color}; font-family: ${line.font}; width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
+			 style = "text-align:${line.align}; color:${line.color}; font-family: ${line.font}; 
+			 		 width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
              >
              </div>
 			`
 	return strHtml
 }
+
 
 // This function renders a canvas in the exact dimensions of the given DOM image, and strokes all given lines at their respective position
 function generateMeme() {
@@ -146,7 +148,6 @@ function generateMeme() {
 }
 
 
-
 function onAddText() {
 	var newText = {
 		id: getRandId(),
@@ -166,18 +167,67 @@ function onAddText() {
 
 
 function showTextControls(element) {
+	var strHtml = `
+			<button class="btn-txt-ctrl" onmousedown="onIncreaseFont()" title="Increase font size"><i class="fas fa-plus"></i></button>
+			<button class="btn-txt-ctrl" onmousedown="onDecreaseFont()" title="Decrease font size"><i class="fas fa-minus"></i></button>
+			<select class="btn-txt-ctrl" onchange="onChangeFontText(this.value)" title="Change font">
+				<option value="Impact" style="font-family:Impact; font-size: 14px">Impact</option>
+				<option value="Tahoma" style="font-family:Tahoma; font-size: 14px">Tahoma</option>
+				<option value="Arial" style="font-family:Arial; font-size: 14px">Arial</option>
+				<option value="zcoolq" style="font-family:zcoolq; font-size: 14px">zcoolq</option>
+			</select>
+			<button class="btn-txt-ctrl" value='left' onclick="onChangeAlignText(this.value)"title="Align left"><i class="fas fa-align-left"></i></button>
+			<button class="btn-txt-ctrl" value='center' onclick="onChangeAlignText(this.value)"title="Align center"><i class="fas fa-align-center"></i></button>
+			<button class="btn-txt-ctrl" value='right' onclick="onChangeAlignText(this.value)"title="Align right"><i class="fas fa-align-right"></i></button>
+			<button class="btn-txt-ctrl" onclick="onDeleteItem(${element.id},'txts')" title="Delete"><i class="fas fa-trash" ></i></button>
+			<div class="close-controls" data-modal="text-controllers" onclick="hideControls('.text-controllers')" title="close"><i class="fas fa-times"></i></div>`
 	var txtPos = element.getBoundingClientRect()
 	var elController = document.querySelector('.text-controllers')
+	elController.innerHTML = strHtml;
+	var style = `left: ${txtPos.left - 20}px; top: ${txtPos.top - 70}px`;
+	elController.style.cssText = style;
+	elController.classList.remove('hide')
+	// <label><input type="color" class="btn-txt-ctrl color-picker" onchange="onChangeColorText(this.value)"></label>
+}
+
+
+
+
+function showPropControls(element) {
+	var strHtml = `
+			<button class="btn-txt-ctrl" onmousedown="onIncreaseProp()" title="Increase size"><i class="fas fa-plus"></i></button>
+			<button class="btn-txt-ctrl" onmousedown="onDecreaseProp()" title="Decrease size"><i class="fas fa-minus"></i></button>
+			<button class="btn-txt-ctrl" onclick="onDeleteItem(${element.id},'props')" title="Delete"><i class="fas fa-trash" ></i></button>
+			<div class="close-controls" data-modal="prop-controllers" onclick="hideControls('.prop-controllers')" title="close"><i class="fas fa-times"></i></div>`
+	var txtPos = element.getBoundingClientRect()
+	var elController = document.querySelector('.prop-controllers')
+	elController.innerHTML = strHtml;
 	var style = `left: ${txtPos.left - 20}px; top: ${txtPos.top - 70}px`;
 	elController.style.cssText = style;
 	elController.classList.remove('hide')
 }
 
 
+function hideControls(modalClass) {
+	document.querySelector(modalClass).classList.add('hide')
+}
+
+
+
+function onDeleteItem(element, type) {
+	var itemIdx = getItemIdxById(element.id, type)
+	gMeme[type].splice(itemIdx, 1)
+	var modalClass = (type === 'txts') ? '.text-controllers' : '.prop-controllers';
+	console.log(modalClass)
+	hideControls(modalClass);
+	renderItems()
+}
+
+
 function onIncreaseFont() {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id,'txts')
+	var textIdx = getItemIdxById(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.size++
 	textModel.width += 5
@@ -188,7 +238,7 @@ function onIncreaseFont() {
 function onDecreaseFont() {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id,'txts')
+	var textIdx = getItemIdxById(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.size--
 	textModel.width--
@@ -197,10 +247,9 @@ function onDecreaseFont() {
 
 
 function onChangeColorText(selectedColor) {
-	console.log(selectedColor)
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id,'txts')
+	var textIdx = getItemIdxById(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.color = selectedColor
 	renderItems()
@@ -210,7 +259,7 @@ function onChangeColorText(selectedColor) {
 function onChangeAlignText(selectedAlign) {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id,'txts')
+	var textIdx = getItemIdxById(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.align = selectedAlign
 	renderItems()
@@ -218,20 +267,13 @@ function onChangeAlignText(selectedAlign) {
 
 
 
-function onDeleteText() {
-	var elId = `#${gEditableTextId}`
-	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id,'txts')
-	gMeme.txts.splice(textIdx, 1)
-	hideTextControls()
-	renderItems()
-}
+
 
 
 function onAddProps() {
 	var elPropCnt = document.querySelector('.prop-container')
 	var strHtml = ''
-	for (let i = 0; i < 3; i++) {
+	for (let i = 0; i < 6; i++) {
 		strHtml +=
 			`<img onclick="addProp(this)" class="prop" type="props" id="${i}" src="img/addons/${i}.png" >`
 	}
@@ -245,7 +287,6 @@ function hideProps() {
 }
 
 function addProp(prop) {
-	console.log(prop);
 	var prop = {
 		id: getRandId(),
 		srcId: prop.id,
@@ -262,19 +303,18 @@ function addProp(prop) {
 function renderProp(prop) {
 	var strHtml = `
 			 <div id="${prop.id}" data-type="props"
-				onClick="markEditable(this); showTextControls(this)"
-				onmousedown="dragElement(this)"
-				ontouchstart="dragElementMobile(this)"
-				style = "z-index:2; position:absolute; width:${prop.width}px; top:${prop.top}px; left:${prop.left}px"
-			 >
-					<img class="prop" 
-					id="${prop.id}" 
-					src="img/addons/${prop.srcId}.png"
-					>
+		onClick="markEditable(this); showPropControls(this)"
+		onmousedown="dragElement(this)"
+		ontouchstart="dragElementMobile(this)"
+		style="z-index:2; position:absolute; width:${prop.width}px; top:${prop.top}px; left:${prop.left}px"
+	>
+		<img class="prop"
+			id="${prop.id}"
+			src="img/addons/${prop.srcId}.png"
+		>
              </div>
-			`
+		`
 	return strHtml;
-	document.querySelector('.meme-container').innerHTML += strHtml;
 }
 
 
@@ -285,7 +325,7 @@ function hideTextControls() {
 function onChangeFontText(selectedFont) {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id,'txts')
+	var textIdx = getItemIdxById(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.font = selectedFont
 	renderItems()
@@ -347,7 +387,7 @@ function updateLinePos(element) {
 //Service function
 function getItemIdxById(id, type) {
 	return gMeme[type].findIndex(function (item) {
-		return item.id === id
+		return id === item.id
 	})
 }
 
@@ -355,12 +395,10 @@ function getItemIdxById(id, type) {
 
 //This function updates the model every time a line text has been changed
 function updateLineText(line) {
-	console.log('potato!!!!!!!',line.value);
-	console.log('potato!!!!!!!',line.dataset.type);
 	var type = line.dataset.type
 	var lineId = line.id
 	var lineTxt = line.value
-	var lineIdx = getItemIdxById(lineId,type)
+	var lineIdx = getItemIdxById(lineId, type)
 	var lineModel = gMeme.txts[lineIdx]
 	lineModel.line = lineTxt
 	lineModel.width = getTextWidth(lineModel)

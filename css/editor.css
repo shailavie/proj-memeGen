@@ -64,7 +64,7 @@
 
 
 
-.text-controllers {
+.controllers {
     display: flex;
     align-items: center;
     padding: 20px;
@@ -148,7 +148,7 @@ option {
     grid-template-rows: repeat(3,100px);
     grid-gap: 10px;
     width: auto;
-    height: 100px;
+    height: auto;
     background-color: whitesmoke;
     border-radius: 5px;
     top: 50%;
