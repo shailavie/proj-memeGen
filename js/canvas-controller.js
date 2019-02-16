@@ -18,7 +18,7 @@ function renderCanvas() {
 }
 
 
-function drawlines(){
+function drawlines() {
     var lines = gMeme.txts;
     lines.forEach(function (line) {
         drawStroked(line)
@@ -36,24 +36,69 @@ function drawStroked({ line, size, color, strokeColor, font, left, top }) {
 
 
 function drawImg() {
-	let img = new Image();
-	img.src = gMemeImgSrc;
-	gCanvas = document.querySelector('#canvas');
-	gCtx = gCanvas.getContext('2d')
-	gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
+    let img = new Image();
+    img.src = gMemeImgSrc;
+    gCanvas = document.querySelector('#canvas');
+    gCtx = gCanvas.getContext('2d')
+    gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
 }
 
 
 function drawProps() {
-	var props = gMeme.props;
-	props.forEach(function (prop){
-		let img = new Image();
-		img.src = `img/addons/${prop.srcId}.png`
-		gCanvas = document.querySelector('#canvas');
-		gCtx = gCanvas.getContext('2d')
-		gCtx.drawImage(img, prop.left, prop.top, prop.width, prop.height);
-	})
+    var props = gMeme.props;
+    props.forEach(function (prop) {
+        console.log(prop)
+        let img = new Image();
+        img.src = `img/addons/${prop.srcId}.png`
+        gCanvas = document.querySelector('#canvas');
+        gCtx = gCanvas.getContext('2d')
+        gCtx.drawImage(img, prop.left, prop.top, prop.width, prop.height);
+    })
 }
+
+
+function drawProps2() {
+    var props = gMeme.props;
+    props.forEach(function (prop) {
+        let img = new Image();
+        img.src = `img/addons/${prop.srcId}.png`
+        gCanvas = document.querySelector('#canvas');
+        gCtx = gCanvas.getContext('2d')
+        var deg = prop.rotate
+        var angleInRadians = deg * Math.PI / 180
+        console.log(deg, 'in radians is', angleInRadians)
+        var x = gCanvas.width / 2;
+        var y = gCanvas.height / 2;
+        var width = img.width;
+        var height = img.height;
+        // gCtx.translate(x, y);
+        // gCtx.rotate(angleInRadians);
+        // gCtx.drawImage(img, -width / 2, -height / 2, prop.width, prop.height);
+        // gCtx.rotate(-angleInRadians);
+        // gCtx.translate(-x, -y);
+
+        rotateAndPaintImage ( gCtx, img, angleInRadians, prop.left, prop.top, width/2, height/2 );
+
+    })
+}
+
+
+
+function rotateAndPaintImage ( context, image, angleInRad , positionX, positionY, axisX, axisY ) {
+    context.translate( positionX, positionY );
+    context.rotate( angleInRad );
+    context.drawImage( image, -axisX, -axisY );
+    context.rotate( -angleInRad );
+    context.translate( -positionX, -positionY );
+  }
+
+
+
+// context.translate( positionX, positionY );
+// context.rotate( angleInRad );
+// context.drawImage( image, -axisX, -axisY );
+// context.rotate( -angleInRad );
+// context.translate( -positionX, -positionY );
 
 
 //TO DO - Render a TRUE size hidden canvas solely for download purposes 
@@ -138,7 +183,7 @@ function onColorChange(color, property) {
 function onResetCanvas() {
     gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
 }
- 
+
 
 function onCheckMousePos(ev) {
     let targetId = ev.target.id;

@@ -59,14 +59,11 @@ function getImgId() {
 	return id;
 }
 
-
 // This function renders the chosen image, so we can calculate where to position the lines based on its size
 function renderImg() {
 	var strHtml = `<img class="img-container" style="z-index:-1"  id="meme-img" src="img/${gMeme.selectedImgId}.jpg" alt="">`
 	document.querySelector('.meme-container').innerHTML = strHtml;
-
 }
-
 
 // This function renders the default top and bottom lines, at image center, with a font-size padding from top and bottom
 function renderItems() {
@@ -82,7 +79,7 @@ function renderProps() {
 	var strHtml = ''
 	var props = gMeme.props;
 	props.forEach(function (prop) {
-		strHtml += renderProp(prop);
+		strHtml += getPropStrHtml(prop);
 	})
 	return strHtml;
 }
@@ -98,13 +95,15 @@ function renderLines() {
 }
 
 function getLineStrHtml(line) {
+	// <div class="${line.id}" data-id="${line.id}">
 	var strHtml = `
-			 <div class="${line.id}">
-      		 <input contenteditable="true" 
+			<input 
+			 contenteditable="true" 
 			 class="txt" 
 			 data-type="txts"
+			 data-id="${line.id}"
 			 type="texts"
-			 onClick="markEditable(this); showTextControls(this)"
+			 onClick="markEditable(${line.id}); showTextControls(this)"
              onmousedown="dragElement(this)"
              ontouchstart="dragElementMobile(this)"
              onchange="updateLineText(this)"
@@ -114,39 +113,31 @@ function getLineStrHtml(line) {
 			 style = "text-align:${line.align}; color:${line.color}; font-family: ${line.font}; 
 			 		 width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
              >
-             </div>
-			`
+			 `
+            //  </div>
 	return strHtml
 }
 
-
-// This function renders a canvas in the exact dimensions of the given DOM image, and strokes all given lines at their respective position
-function generateMeme() {
-	if (gIsMemeReady) {
-		document.querySelector('.meme-container').classList.remove('hide')
-		document.querySelector('.canvas-container').classList.add('hide')
-		document.querySelector('.canvas-controls').classList.add('hide')
-		document.querySelector('.add-text').classList.remove('hide')
-		document.querySelector('.add-prop').classList.remove('hide')
-		// document.querySelector('.download').classList.add('hide')
-		document.querySelector('.generateBtn').innerText = 'Save Texts'
-	} else {
-		renderCanvas()
-		drawImg()
-		drawlines()
-		drawProps()
-		hideTextControls();
-		document.querySelector('.meme-container').classList.add('hide')
-		document.querySelector('.add-text').classList.add('hide')
-		document.querySelector('.add-prop').classList.add('hide')
-		document.querySelector('.canvas-container').classList.remove('hide')
-		document.querySelector('.canvas-controls').classList.remove('hide')
-		// document.querySelector('.download').classList.remove('hide')
-		document.querySelector('.generateBtn').innerText = 'Edit Texts'
-	}
-	gIsMemeReady = !gIsMemeReady;
+function getPropStrHtml(prop) {
+	//  //markEditable(${prop.id}); extracted from 3 lines down
+	var strHtml = `
+			<img 
+				contenteditable="true" 
+				class="prop"
+				data-type="props"
+				data-id="${prop.id}"
+				type="props"
+				onClick="showPropControls(this)"
+				onmousedown="dragElement(this)"
+				ontouchstart="dragElementMobile(this)"
+				id="${prop.id}"
+				style="z-index:2; position:absolute; width:${prop.width}px; top:${prop.top}px; left:${prop.left}px; transform:rotate(${prop.rotate}deg)"
+				src="img/addons/${prop.srcId}.png"
+			>
+			`
+			// </div>
+	return strHtml;
 }
-
 
 function onAddText() {
 	var newText = {
@@ -179,8 +170,8 @@ function showTextControls(element) {
 			<button class="btn-txt-ctrl" value='left' onclick="onChangeAlignText(this.value)"title="Align left"><i class="fas fa-align-left"></i></button>
 			<button class="btn-txt-ctrl" value='center' onclick="onChangeAlignText(this.value)"title="Align center"><i class="fas fa-align-center"></i></button>
 			<button class="btn-txt-ctrl" value='right' onclick="onChangeAlignText(this.value)"title="Align right"><i class="fas fa-align-right"></i></button>
-			<button class="btn-txt-ctrl" onclick="onDeleteItem(${element.id},'txts')" title="Delete"><i class="fas fa-trash" ></i></button>
-			<div class="close-controls" data-modal="text-controllers" onclick="hideControls('.text-controllers')" title="close"><i class="fas fa-times"></i></div>`
+			<button class="btn-txt-ctrl" onclick="onDeleteItem(${element.dataset.id},'txts')" title="Delete"><i class="fas fa-trash" ></i></button>
+			<div class="close-controls" data-modal="text-controllers" onclick="hideModal('.text-controllers')" title="close"><i class="fas fa-times"></i></div>`
 	var txtPos = element.getBoundingClientRect()
 	var elController = document.querySelector('.text-controllers')
 	elController.innerHTML = strHtml;
@@ -189,45 +180,83 @@ function showTextControls(element) {
 	elController.classList.remove('hide')
 	// <label><input type="color" class="btn-txt-ctrl color-picker" onchange="onChangeColorText(this.value)"></label>
 }
+ 
 
-
-
-
+//
 function showPropControls(element) {
 	var strHtml = `
-			<button class="btn-txt-ctrl" onmousedown="onIncreaseProp()" title="Increase size"><i class="fas fa-plus"></i></button>
-			<button class="btn-txt-ctrl" onmousedown="onDecreaseProp()" title="Decrease size"><i class="fas fa-minus"></i></button>
+			<button class="btn-txt-ctrl" onmousedown="onChangeSizeProp(${element.id},5)" title="Increase size"><i class="fas fa-plus"></i></button>
+			<button class="btn-txt-ctrl" onmousedown="onChangeSizeProp(${element.id},-5)" title="Decrease size"><i class="fas fa-minus"></i></button>
+			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},5)" title="Rotate">⭮</button>
+			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},-5)" title="Rotate">⭯</button>
 			<button class="btn-txt-ctrl" onclick="onDeleteItem(${element.id},'props')" title="Delete"><i class="fas fa-trash" ></i></button>
-			<div class="close-controls" data-modal="prop-controllers" onclick="hideControls('.prop-controllers')" title="close"><i class="fas fa-times"></i></div>`
-	var txtPos = element.getBoundingClientRect()
+			<div class="close-controls" data-modal="prop-controllers" onclick="hideModal('.prop-controllers')" title="close"><i class="fas fa-times"></i></div>`
+	var propPos = element.getBoundingClientRect()
 	var elController = document.querySelector('.prop-controllers')
 	elController.innerHTML = strHtml;
-	var style = `left: ${txtPos.left - 20}px; top: ${txtPos.top - 70}px`;
+	var style = `left: ${propPos.left - 20}px; top: ${propPos.top - 70}px`;
 	elController.style.cssText = style;
 	elController.classList.remove('hide')
 }
 
 
-function hideControls(modalClass) {
+
+function onChangeSizeProp(element,value) {
+	var elementId = element.id+''
+	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
+	gMeme['props'][itemIdx].width += value
+	renderItems()
+}
+
+function onRotateProp(element,value) {
+	var elementId = element.id+''
+	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
+	gMeme['props'][itemIdx].rotate += value
+	renderItems()
+}
+
+ 
+
+
+// onmousedown="onChangeItemValue(${elId},'txts','size',1)"
+// function onChangeItemValue(itemId,type,prop,value){
+// 	console.log(itemId.id,type,prop,value);
+// 	var itemIdx = getItemIdxByIdAndType(itemId.id,type)
+// 	if (prop === 'size') {
+// 		gMeme[type][itemIdx][prop] += value;
+// 		gMeme[type][itemIdx]['width'] += value
+// 	} else {
+// 		gMeme[type][itemIdx][prop] = value;
+// 	}
+// 	renderItems();
+// }
+
+
+
+
+function onDeleteItem(element, type) {
+	var elementId = element.id+''
+	var itemIdx = getItemIdxByIdAndType(elementId, type)
+	gMeme[type].splice(itemIdx, 1)
+	var modalClass = (type === 'txts') ? '.text-controllers' : '.prop-controllers';
+	hideModal(modalClass);
+	renderItems()
+}
+
+
+
+function hideModal(modalClass) {
 	document.querySelector(modalClass).classList.add('hide')
 }
 
 
 
-function onDeleteItem(element, type) {
-	var itemIdx = getItemIdxById(element.id, type)
-	gMeme[type].splice(itemIdx, 1)
-	var modalClass = (type === 'txts') ? '.text-controllers' : '.prop-controllers';
-	console.log(modalClass)
-	hideControls(modalClass);
-	renderItems()
-}
 
 
 function onIncreaseFont() {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id, 'txts')
+	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.size++
 	textModel.width += 5
@@ -238,7 +267,7 @@ function onIncreaseFont() {
 function onDecreaseFont() {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id, 'txts')
+	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.size--
 	textModel.width--
@@ -249,7 +278,7 @@ function onDecreaseFont() {
 function onChangeColorText(selectedColor) {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id, 'txts')
+	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.color = selectedColor
 	renderItems()
@@ -259,7 +288,7 @@ function onChangeColorText(selectedColor) {
 function onChangeAlignText(selectedAlign) {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id, 'txts')
+	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.align = selectedAlign
 	renderItems()
@@ -273,26 +302,25 @@ function onChangeAlignText(selectedAlign) {
 function onAddProps() {
 	var elPropCnt = document.querySelector('.prop-container')
 	var strHtml = ''
-	for (let i = 0; i < 6; i++) {
+	for (let i = 0; i < 7; i++) {
 		strHtml +=
-			`<img onclick="addProp(this)" class="prop" type="props" id="${i}" src="img/addons/${i}.png" >`
+			`<img onclick="onAddProp(this)" class="prop" type="props" id="${i}" src="img/addons/${i}.png" >`
 	}
-	strHtml += `<div class="close-controls" onclick="hideProps()"><i class="fas fa-times"></i></div>`
+	strHtml += `<div class="close-controls" onclick="hideModal('.prop-container')"><i class="fas fa-times"></i></div>`
 	elPropCnt.innerHTML = strHtml;
 	elPropCnt.classList.remove('hide')
 }
 
-function hideProps() {
-	document.querySelector('.prop-container').classList.add('hide')
-}
 
-function addProp(prop) {
+
+function onAddProp(prop) {
 	var prop = {
 		id: getRandId(),
 		srcId: prop.id,
-		left: 0,
-		top: 0,
+		left: 1,
+		top: 1,
 		width: 100,
+		rotate: 0
 	}
 	gMeme.props.push(prop)
 	renderItems()
@@ -300,32 +328,11 @@ function addProp(prop) {
 
 
 
-function renderProp(prop) {
-	var strHtml = `
-			 <div id="${prop.id}" data-type="props"
-		onClick="markEditable(this); showPropControls(this)"
-		onmousedown="dragElement(this)"
-		ontouchstart="dragElementMobile(this)"
-		style="z-index:2; position:absolute; width:${prop.width}px; top:${prop.top}px; left:${prop.left}px"
-	>
-		<img class="prop"
-			id="${prop.id}"
-			src="img/addons/${prop.srcId}.png"
-		>
-             </div>
-		`
-	return strHtml;
-}
-
-
-function hideTextControls() {
-	document.querySelector('.text-controllers').classList.add('hide')
-}
 
 function onChangeFontText(selectedFont) {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxById(text.id, 'txts')
+	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.font = selectedFont
 	renderItems()
@@ -347,8 +354,9 @@ function onResetCanvas() {
 
 
 
-function markEditable(that) {
-	gEditableTextId = that.id
+function markEditable(itemId) {
+	// console.log('im editable now',itemId.id)
+	gEditableTextId = itemId.id //|| gMeme.txts[0].id || gMeme.props[0].id
 }
 
 
@@ -371,12 +379,13 @@ function setDefaultLinesPos() {
 
 
 //This service function to update the Top and Left of an element after it moved
-function updateLinePos(element) {
+function updateItemPos(element) {
 	var imgPos = document.querySelector('#meme-img').getBoundingClientRect()
 	var itemPos = element.getBoundingClientRect();
 	var itemId = element.id
 	var type = element.dataset.type;
-	var itemIdx = getItemIdxById(itemId, type)
+	// console.log('type is',type)
+	var itemIdx = getItemIdxByIdAndType(itemId, type)
 	var itemModel = gMeme[type][itemIdx]
 	itemModel.top = itemPos.top - imgPos.top;
 	itemModel.left = itemPos.left - imgPos.left;
@@ -385,9 +394,9 @@ function updateLinePos(element) {
 }
 
 //Service function
-function getItemIdxById(id, type) {
+function getItemIdxByIdAndType(id, type) {
 	return gMeme[type].findIndex(function (item) {
-		return id === item.id
+		return item.id === id
 	})
 }
 
@@ -398,13 +407,40 @@ function updateLineText(line) {
 	var type = line.dataset.type
 	var lineId = line.id
 	var lineTxt = line.value
-	var lineIdx = getItemIdxById(lineId, type)
+	var lineIdx = getItemIdxByIdAndType(lineId, type)
 	var lineModel = gMeme.txts[lineIdx]
 	lineModel.line = lineTxt
 	lineModel.width = getTextWidth(lineModel)
 	renderItems();
 }
 
+
+// This function renders a canvas in the exact dimensions of the given DOM image, and strokes all given lines at their respective position
+function generateMeme() {
+	if (gIsMemeReady) {
+		document.querySelector('.meme-container').classList.remove('hide')
+		document.querySelector('.canvas-container').classList.add('hide')
+		document.querySelector('.canvas-controls').classList.add('hide')
+		document.querySelector('.add-text').classList.remove('hide')
+		document.querySelector('.add-prop').classList.remove('hide')
+		// document.querySelector('.download').classList.add('hide')
+		document.querySelector('.generateBtn').innerText = 'Save Texts'
+	} else {
+		renderCanvas()
+		drawImg()
+		drawlines()
+		drawProps()
+		// hideTextControls();
+		document.querySelector('.meme-container').classList.add('hide')
+		document.querySelector('.add-text').classList.add('hide')
+		document.querySelector('.add-prop').classList.add('hide')
+		document.querySelector('.canvas-container').classList.remove('hide')
+		document.querySelector('.canvas-controls').classList.remove('hide')
+		// document.querySelector('.download').classList.remove('hide')
+		document.querySelector('.generateBtn').innerText = 'Edit Texts'
+	}
+	gIsMemeReady = !gIsMemeReady;
+}
 
 
 
