@@ -5,7 +5,7 @@ var gMemeImgSrc = getImgId()
 var gIsMemeReady;
 // var gImgs = [{ id: 1, url: 'img/popo.jpg', keywords: ['happy'] }];
 var gMeme = {
-	selectedImgId: null,
+	selectedImgId: getImgId(),
 	txts: [
 		{
 			id: getRandId(),
@@ -38,7 +38,7 @@ var gMeme = {
 //Init
 function init() {
 	gIsMemeReady = false;
-	renderMemeImg()
+	renderImg()
 	var x = setTimeout(() => {
 		renderLines();
 		clearTimeout(x);
@@ -49,29 +49,39 @@ function init() {
 function getImgId() {
 	var url = window.location.href;
 	var params = url.split('?');
-	var id = params[1]
-	return `img/${id}.jpg`;
+	var id = params[1] | 0;
+	return id;
 }
 
 
 // This function renders the chosen image, so we can calculate where to position the lines based on its size
-function renderMemeImg() {
-	var strHtml = `<img class="img-container" id="meme-img" src="${gMemeImgSrc}" alt="">`
+function renderImg() {
+	var strHtml = `<img class="img-container" style="z-index:-1"  id="meme-img" src="img/${gMeme.selectedImgId}.jpg" alt="">`
 	document.querySelector('.meme-container').innerHTML = strHtml;
+
 }
 
 
 // This function renders the default top and bottom lines, at image center, with a font-size padding from top and bottom
 function renderLines() {
-	// var strHtml1 = `<img class="img-container" id="meme-img" src="${gMemeImgSrc}" alt="">`
-	// document.querySelector('.meme-container').innerHTML = strHtml1;
-	var strHtml = ''
+	console.log('hi there')
 	getLinesPosByImgSize();
+	document.querySelector('.meme-container').innerHTML = ''
+	var strHtml = ''
 	var lines = gMeme.txts;
 	lines.forEach(function (line) {
-		strHtml += `
-    <div class="${line.id}">
-      <input contentEditable="true" 
+		strHtml += getLineStrHtml(line);
+	})
+	console.log(strHtml)
+	strHtml+=`<img class="img-container" id="meme-img" src="img/${gMeme.selectedImgId}.jpg" alt="">`
+	document.querySelector('.meme-container').innerHTML = strHtml;
+}
+
+
+function getLineStrHtml(line) {
+	var strHtml = `
+			 <div class="${line.id}">
+      		 <input contentEditable="true" 
              class="txt" 
              type="text" 
              onmousedown="dragElement(this)"
@@ -83,19 +93,15 @@ function renderLines() {
              style = "text-align:center; width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
              >
              </div>
-             `
-	})
-	document.querySelector('.meme-container').innerHTML += strHtml;
+			`
+	return strHtml
 }
-
-
 
 // This function renders a canvas in the exact dimensions of the given DOM image, and strokes all given lines at their respective position
 function generateMeme() {
 	if (gIsMemeReady) {
 		document.querySelector('.meme-container').classList.remove('hide')
 		document.querySelector('.canvas-container').classList.add('hide')
-		// document.querySelector('.app-menu').classList.add('hide')
 		document.querySelector('.canvas-controls').classList.add('hide')
 		document.querySelector('.download').classList.add('hide')
 		document.querySelector('.generateBtn').innerText = 'Save Texts'
@@ -110,10 +116,8 @@ function generateMeme() {
 		lines.forEach(function (line) {
 			drawStroked(line)
 		})
-		// console.log('potato')
 		document.querySelector('.meme-container').classList.add('hide')
 		document.querySelector('.canvas-container').classList.remove('hide')
-		// document.querySelector('.app-menu').classList.remove('hide')
 		document.querySelector('.canvas-controls').classList.remove('hide')
 		document.querySelector('.download').classList.remove('hide')
 		document.querySelector('.generateBtn').innerText = 'Edit Texts'
@@ -121,7 +125,22 @@ function generateMeme() {
 	gIsMemeReady = !gIsMemeReady;
 }
 
-
+function onAddText() {
+	var newText = {
+		id: getRandId(),
+		line: 'Enter Text',
+		left: 0,
+		top: 0,
+		size: 40,
+		width: 200,
+		align: 'left',
+		color: 'white',
+		strokeColor: 'black',
+		font: 'Impact'
+	}
+	gMeme.txts.push(newText)
+	renderLines()
+}
 
 //This function calculate the default position of top and bottom default lines
 function getLinesPosByImgSize() {
@@ -150,7 +169,8 @@ function updateLinePos(line) {
 	var lineModel = gMeme.txts[lineIdx]
 	lineModel.top = linePos.top - imgPos.top;
 	lineModel.left = linePos.left - imgPos.left;
-	lineModel.width = getTextWidth(line.line, `${line.size}px ${line.font}`);
+	// lineModel.width = getTextWidth(line.line, `${line.size}px ${line.font}`);
+	lineModel.width = getTextWidth(lineModel);
 
 }
 
@@ -158,44 +178,31 @@ function updateLinePos(line) {
 
 //This function updates the model every time a line text has been changed
 function updateLineModel(line) {
-	// console.log('line is: ',line);
 	var lineId = line.id
 	var lineTxt = line.value
 	var lineIdx = getLineIdxById(lineId)
 	var lineModel = gMeme.txts[lineIdx]
 	lineModel.line = lineTxt
-	// console.log('length: ',lineTxt.length)
 	lineModel.size = Math.floor(lineTxt.length * (-2) + 60);
-	// console.log('new font size: ', lineModel.size)
-	// console.log(lineTxt);
 	renderLine(line, lineModel);
-	// setTimeout(() => {
-	// }, 10);
 }
 
 function renderLine(line, lineModel) {
-	// console.log('do we still need the dom line:',line)
-	console.log('new font size: ', lineModel.size)
 	var strHtml = `
-    <input contentEditable="true" 
-    class="txt" 
-    type="text" 
-    onmousedown="dragElement(this)"
-    ontouchstart="dragElementMobile(this)"
-    onchange="updateLineModel(this)"
-    id="${lineModel.id}"
-    value = "${lineModel.line}"
-    placeholder = "${lineModel.line}" | "Enter Text"
-    style = "text-align:center; width: ${lineModel.width}px; font-size:${lineModel.size}px; top:${lineModel.top}px; left:${lineModel.left}px"
-    >
-  `
-	console.log('strHtml:', strHtml)
+		<input contentEditable="true" 
+		class="txt" 
+		type="text" 
+		onmousedown="dragElement(this)"
+		ontouchstart="dragElementMobile(this)"
+		onchange="updateLineModel(this)"
+		id="${lineModel.id}"
+		value = "${lineModel.line}"
+		placeholder = "${lineModel.line}" | "Enter Text"
+		style = "text-align:center; width: ${lineModel.width}px; font-size:${lineModel.size}px; top:${lineModel.top}px; left:${lineModel.left}px"
+		>
+	`
 	var elLine = document.querySelector(`.${lineModel.id}`);
-	// var elLine = document.querySelector('.meme-container');
-	console.log('this is the line that should be changed:', elLine);
 	elLine.innerHTML = strHtml;
-	// elLine.innerHTML = strHtml;
-	// line.innerHTML = strHtml;
 }
 
 
