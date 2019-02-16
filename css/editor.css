@@ -65,7 +65,23 @@
 
 
 .text-controllers {
-    /* position: absolute; */
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    justify-content:space-evenly;
+    flex-direction: row;
+    width: auto;
+    height: 50px;
+    background-color: whitesmoke;
+    color: black;
+    border-radius: 5px;
+    z-index: 3;
+    border: 1px solid black;
+    transition-duration: all 0.5s;
+}
+
+
+.canvas-controllers {
     display: flex;
     align-items: center;
     padding: 20px;
@@ -106,6 +122,7 @@ option {
 
 .close-controls {
     display: flex;
+    z-index: 3;
     align-items: center;
     text-align: center;
     justify-content: center;
@@ -115,12 +132,34 @@ option {
     background-color: black;
     color: white;
     border-radius: 50px;
-    /* clip-path: circle(40%); */
     position: absolute;
     border: 1px solid white;
     top: -10px;;
     right: -10px;
     cursor: pointer;
+}
+
+.prop-container {
+    position: absolute;
+    align-items: center;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: repeat(3,100px);
+    grid-template-rows: repeat(3,100px);
+    grid-gap: 10px;
+    width: auto;
+    height: 100px;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50% ,-50%);
+}
+
+
+.prop {
+    width: 100px;
+    height: auto;
 }
 
 .color-picker {
@@ -140,7 +179,6 @@ h1 ,h5 {
     margin-bottom: 10px;
     text-decoration: none;
     text-align: left;
-    /* color: rgb(231, 228, 228); */
 }
 
 

@@ -8,6 +8,7 @@ var gEditableTextId;
 // var gImgs = [{ id: 1, url: 'img/popo.jpg', keywords: ['happy'] }];
 var gMeme = {
 	selectedImgId: getImgId(),
+	props: [],
 	txts: [
 		{
 			id: getRandId(),
@@ -45,7 +46,7 @@ function init() {
 	renderImg()
 	var x = setTimeout(() => {
 		setDefaultLinesPos();
-		renderLines();
+		renderItems();
 		clearTimeout(x);
 	}, 10);
 }
@@ -68,24 +69,41 @@ function renderImg() {
 
 
 // This function renders the default top and bottom lines, at image center, with a font-size padding from top and bottom
-function renderLines() {
+function renderItems() {
 	document.querySelector('.meme-container').innerHTML = ''
-	var strHtml = ''
-	var lines = gMeme.txts;
-	lines.forEach(function (line) {
-		strHtml += getLineStrHtml(line);
-	})
+	var strHtml = renderLines()
+	strHtml += renderProps()
 	strHtml += `<img class="img-container" id="meme-img" src="img/${gMeme.selectedImgId}.jpg" alt="">`
 	document.querySelector('.meme-container').innerHTML = strHtml;
 }
 
 
+function renderProps(){
+	var strHtml = ''
+	var props = gMeme.props;
+	props.forEach(function (prop) {
+		strHtml += renderProp(prop);
+	})
+	return strHtml;
+}
+
+
+function renderLines(){
+	var strHtml = ''
+	var lines = gMeme.txts;
+	lines.forEach(function (line) {
+		strHtml += getLineStrHtml(line);
+	})
+	return strHtml;
+}
+
 function getLineStrHtml(line) {
 	var strHtml = `
 			 <div class="${line.id}">
       		 <input contenteditable="true" 
-             class="txt" 
-			 type="text" 
+			 class="txt" 
+			 data-type="txts"
+			 type="texts"
 			 onClick="markEditable(this); showTextControls(this)"
              onmousedown="dragElement(this)"
              ontouchstart="dragElementMobile(this)"
@@ -97,7 +115,6 @@ function getLineStrHtml(line) {
              >
              </div>
 			`
-	// console.log('rendering line width :', line.width)
 	return strHtml
 }
 
@@ -108,29 +125,27 @@ function generateMeme() {
 		document.querySelector('.canvas-container').classList.add('hide')
 		document.querySelector('.canvas-controls').classList.add('hide')
 		document.querySelector('.add-text').classList.remove('hide')
-		document.querySelector('.download').classList.add('hide')
+		document.querySelector('.add-prop').classList.remove('hide')
+		// document.querySelector('.download').classList.add('hide')
 		document.querySelector('.generateBtn').innerText = 'Save Texts'
 	} else {
-		let img = new Image();
-		img.src = gMemeImgSrc;
 		renderCanvas()
-		gCanvas = document.querySelector('#canvas');
-		gCtx = gCanvas.getContext('2d')
-		gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
-		var lines = gMeme.txts;
-		lines.forEach(function (line) {
-			drawStroked(line)
-		})
+		drawImg()
+		drawlines()
+		drawProps()
 		hideTextControls();
 		document.querySelector('.meme-container').classList.add('hide')
 		document.querySelector('.add-text').classList.add('hide')
+		document.querySelector('.add-prop').classList.add('hide')
 		document.querySelector('.canvas-container').classList.remove('hide')
 		document.querySelector('.canvas-controls').classList.remove('hide')
-		document.querySelector('.download').classList.remove('hide')
+		// document.querySelector('.download').classList.remove('hide')
 		document.querySelector('.generateBtn').innerText = 'Edit Texts'
 	}
 	gIsMemeReady = !gIsMemeReady;
 }
+
+
 
 function onAddText() {
 	var newText = {
@@ -146,15 +161,15 @@ function onAddText() {
 		font: 'Impact'
 	}
 	gMeme.txts.push(newText)
-	renderLines()
+	renderItems()
 }
 
 
 function showTextControls(element) {
 	var txtPos = element.getBoundingClientRect()
 	var elController = document.querySelector('.text-controllers')
-	var style = `left: ${txtPos.left-20}px; top: ${txtPos.top - 70}px`;
-	elController.style.cssText  = style;
+	var style = `left: ${txtPos.left - 20}px; top: ${txtPos.top - 70}px`;
+	elController.style.cssText = style;
 	elController.classList.remove('hide')
 }
 
@@ -162,22 +177,22 @@ function showTextControls(element) {
 function onIncreaseFont() {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getLineIdxById(text.id)
+	var textIdx = getItemIdxById(text.id,'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.size++
 	textModel.width += 5
-	renderLines()
+	renderItems()
 }
 
 
 function onDecreaseFont() {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getLineIdxById(text.id)
+	var textIdx = getItemIdxById(text.id,'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.size--
 	textModel.width--
-	renderLines()
+	renderItems()
 }
 
 
@@ -185,20 +200,20 @@ function onChangeColorText(selectedColor) {
 	console.log(selectedColor)
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getLineIdxById(text.id)
+	var textIdx = getItemIdxById(text.id,'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.color = selectedColor
-	renderLines()
+	renderItems()
 }
 
 
 function onChangeAlignText(selectedAlign) {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getLineIdxById(text.id)
+	var textIdx = getItemIdxById(text.id,'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.align = selectedAlign
-	renderLines()
+	renderItems()
 }
 
 
@@ -206,29 +221,78 @@ function onChangeAlignText(selectedAlign) {
 function onDeleteText() {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getLineIdxById(text.id)
-	gMeme.txts.splice(textIdx,1)
+	var textIdx = getItemIdxById(text.id,'txts')
+	gMeme.txts.splice(textIdx, 1)
 	hideTextControls()
-	renderLines()
+	renderItems()
 }
 
 
-function hideTextControls(){
+function onAddProps() {
+	var elPropCnt = document.querySelector('.prop-container')
+	var strHtml = ''
+	for (let i = 0; i < 3; i++) {
+		strHtml +=
+			`<img onclick="addProp(this)" class="prop" type="props" id="${i}" src="img/addons/${i}.png" >`
+	}
+	strHtml += `<div class="close-controls" onclick="hideProps()"><i class="fas fa-times"></i></div>`
+	elPropCnt.innerHTML = strHtml;
+	elPropCnt.classList.remove('hide')
+}
+
+function hideProps() {
+	document.querySelector('.prop-container').classList.add('hide')
+}
+
+function addProp(prop) {
+	console.log(prop);
+	var prop = {
+		id: getRandId(),
+		srcId: prop.id,
+		left: 0,
+		top: 0,
+		width: 100,
+	}
+	gMeme.props.push(prop)
+	renderItems()
+}
+
+
+
+function renderProp(prop) {
+	var strHtml = `
+			 <div id="${prop.id}" data-type="props"
+				onClick="markEditable(this); showTextControls(this)"
+				onmousedown="dragElement(this)"
+				ontouchstart="dragElementMobile(this)"
+				style = "z-index:2; position:absolute; width:${prop.width}px; top:${prop.top}px; left:${prop.left}px"
+			 >
+					<img class="prop" 
+					id="${prop.id}" 
+					src="img/addons/${prop.srcId}.png"
+					>
+             </div>
+			`
+	return strHtml;
+	document.querySelector('.meme-container').innerHTML += strHtml;
+}
+
+
+function hideTextControls() {
 	document.querySelector('.text-controllers').classList.add('hide')
 }
 
 function onChangeFontText(selectedFont) {
-	console.log(selectedFont)
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getLineIdxById(text.id)
+	var textIdx = getItemIdxById(text.id,'txts')
 	var textModel = gMeme.txts[textIdx]
 	textModel.font = selectedFont
-	renderLines()
+	renderItems()
 }
 
 
-function onResetCanvas(){
+function onResetCanvas() {
 	generateMeme()
 	generateMeme()
 }
@@ -267,49 +331,67 @@ function setDefaultLinesPos() {
 
 
 //This service function to update the Top and Left of an element after it moved
-function updateLinePos(line) {
+function updateLinePos(element) {
 	var imgPos = document.querySelector('#meme-img').getBoundingClientRect()
-	var linePos = line.getBoundingClientRect();
-	var lineId = line.id
-	var lineIdx = getLineIdxById(lineId)
-	var lineModel = gMeme.txts[lineIdx]
-	lineModel.top = linePos.top - imgPos.top;
-	lineModel.left = linePos.left - imgPos.left;
-	// lineModel.width = getTextWidth(line.line, `${line.size}px ${line.font}`);
-	lineModel.width = getTextWidth(lineModel);
+	var itemPos = element.getBoundingClientRect();
+	var itemId = element.id
+	var type = element.dataset.type;
+	var itemIdx = getItemIdxById(itemId, type)
+	var itemModel = gMeme[type][itemIdx]
+	itemModel.top = itemPos.top - imgPos.top;
+	itemModel.left = itemPos.left - imgPos.left;
+	if (type === 'txts') itemModel.width = getTextWidth(itemModel);
+	if (type === 'props') itemModel.height = itemPos.height;
+}
 
+//Service function
+function getItemIdxById(id, type) {
+	return gMeme[type].findIndex(function (item) {
+		return item.id === id
+	})
 }
 
 
 
 //This function updates the model every time a line text has been changed
 function updateLineText(line) {
+	console.log('potato!!!!!!!',line.value);
+	console.log('potato!!!!!!!',line.dataset.type);
+	var type = line.dataset.type
 	var lineId = line.id
 	var lineTxt = line.value
-	var lineIdx = getLineIdxById(lineId)
+	var lineIdx = getItemIdxById(lineId,type)
 	var lineModel = gMeme.txts[lineIdx]
 	lineModel.line = lineTxt
 	lineModel.width = getTextWidth(lineModel)
-	renderLines();
+	renderItems();
 }
 
- 
 
-//Service function
-function getLineIdxById(id) {
-	return gMeme.txts.findIndex(function (line) {
-		return line.id === id
-	})
-}
+
+
 
 
 //This function handles the meme downloading process
 function onDownloadImage(elLink) {
-	elLink.href = gCanvas.toDataURL()
-	var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
-	elLink.download = `${name}.jpg`
+	if (!gCanvas) {
+		generateMeme()
+	}
+	setTimeout(() => {
+		elLink.href = gCanvas.toDataURL()
+		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
+		elLink.download = `${name}.jpg`
+	}, 500);
 }
 
+function onDownloadImageNow(elLink) {
+	generateMeme();
+	setTimeout(() => {
+		elLink.href = gCanvas.toDataURL()
+		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
+		elLink.download = `${name}.jpg`
+	}, 500);
+}
 
 //This function uses a dummy canvas to calculate text measurement
 function getTextWidth(textObj) {
@@ -321,4 +403,3 @@ function getTextWidth(textObj) {
 	var metrics = ctx.measureText(textObj.line);
 	return metrics.width + 20;
 };
- 

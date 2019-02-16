@@ -6,17 +6,6 @@ var gIsErasing = false;
 var gTool = 'pencil';
 
 
-
-function drawStroked({ line, size, color, strokeColor, font, left, top }) {
-    gCtx.font = `${size}px ${font}`
-    gCtx.strokeStyle = strokeColor;
-    gCtx.lineWidth = Math.floor(size / 10);
-    gCtx.strokeText(line, left, top + size);
-    gCtx.fillStyle = color;
-    gCtx.fillText(line, left, top + size);
-}
-
-
 function renderCanvas() {
     var elImg = document.querySelector('#meme-img')
     var imgWidth = elImg.clientWidth;
@@ -28,7 +17,44 @@ function renderCanvas() {
     document.querySelector('#canvas-container').innerHTML = strHtml;
 }
 
-{/* <div class="footer-btn-container"><a onclick="onDownloadImage(this)" class="btn btn-download">Download Your Masterpice</a></div> */}
+
+function drawlines(){
+    var lines = gMeme.txts;
+    lines.forEach(function (line) {
+        drawStroked(line)
+    })
+}
+
+function drawStroked({ line, size, color, strokeColor, font, left, top }) {
+    gCtx.font = `${size}px ${font}`
+    gCtx.strokeStyle = strokeColor;
+    gCtx.lineWidth = Math.floor(size / 10);
+    gCtx.strokeText(line, left, top + size);
+    gCtx.fillStyle = color;
+    gCtx.fillText(line, left, top + size);
+}
+
+
+function drawImg() {
+	let img = new Image();
+	img.src = gMemeImgSrc;
+	gCanvas = document.querySelector('#canvas');
+	gCtx = gCanvas.getContext('2d')
+	gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height);
+}
+
+
+function drawProps() {
+	var props = gMeme.props;
+	props.forEach(function (prop){
+		let img = new Image();
+		img.src = `img/addons/${prop.srcId}.png`
+		gCanvas = document.querySelector('#canvas');
+		gCtx = gCanvas.getContext('2d')
+		gCtx.drawImage(img, prop.left, prop.top, prop.width, prop.height);
+	})
+}
+
 
 //TO DO - Render a TRUE size hidden canvas solely for download purposes 
 // var imgTrueWidth = elImg.width;
