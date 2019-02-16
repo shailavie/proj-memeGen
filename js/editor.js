@@ -41,6 +41,7 @@ var gMeme = {
 function init() {
 	gIsMemeReady = false;
 	gMemeImgSrc = `img/${gMeme.selectedImgId}.jpg`
+	gEditableTextId = gMeme.txts[0].id;
 	renderImg()
 	var x = setTimeout(() => {
 		setDefaultLinesPos();
@@ -85,7 +86,7 @@ function getLineStrHtml(line) {
       		 <input contenteditable="true" 
              class="txt" 
 			 type="text" 
-			 onClick="markEditable(this)"
+			 onClick="markEditable(this); showTextControls(this)"
              onmousedown="dragElement(this)"
              ontouchstart="dragElementMobile(this)"
              onchange="updateLineText(this)"
@@ -106,6 +107,7 @@ function generateMeme() {
 		document.querySelector('.meme-container').classList.remove('hide')
 		document.querySelector('.canvas-container').classList.add('hide')
 		document.querySelector('.canvas-controls').classList.add('hide')
+		document.querySelector('.add-text').classList.remove('hide')
 		document.querySelector('.download').classList.add('hide')
 		document.querySelector('.generateBtn').innerText = 'Save Texts'
 	} else {
@@ -119,7 +121,9 @@ function generateMeme() {
 		lines.forEach(function (line) {
 			drawStroked(line)
 		})
+		hideTextControls();
 		document.querySelector('.meme-container').classList.add('hide')
+		document.querySelector('.add-text').classList.add('hide')
 		document.querySelector('.canvas-container').classList.remove('hide')
 		document.querySelector('.canvas-controls').classList.remove('hide')
 		document.querySelector('.download').classList.remove('hide')
@@ -143,6 +147,15 @@ function onAddText() {
 	}
 	gMeme.txts.push(newText)
 	renderLines()
+}
+
+
+function showTextControls(element) {
+	var txtPos = element.getBoundingClientRect()
+	var elController = document.querySelector('.text-controllers')
+	var style = `left: ${txtPos.left-20}px; top: ${txtPos.top - 70}px`;
+	elController.style.cssText  = style;
+	elController.classList.remove('hide')
 }
 
 
@@ -178,14 +191,31 @@ function onChangeColorText(selectedColor) {
 	renderLines()
 }
 
+
+function onChangeAlignText(selectedAlign) {
+	var elId = `#${gEditableTextId}`
+	var text = document.querySelector(elId);
+	var textIdx = getLineIdxById(text.id)
+	var textModel = gMeme.txts[textIdx]
+	textModel.align = selectedAlign
+	renderLines()
+}
+
+
+
 function onDeleteText() {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
 	var textIdx = getLineIdxById(text.id)
 	gMeme.txts.splice(textIdx,1)
+	hideTextControls()
 	renderLines()
 }
 
+
+function hideTextControls(){
+	document.querySelector('.text-controllers').classList.add('hide')
+}
 
 function onChangeFontText(selectedFont) {
 	console.log(selectedFont)
@@ -198,26 +228,23 @@ function onChangeFontText(selectedFont) {
 }
 
 
-
-
-
-
-
-function updateModelText(textId, prop, value) {
-
+function onResetCanvas(){
+	generateMeme()
+	generateMeme()
 }
+
+
+
+
+
+// function updateModelText(textId, prop, value) {
+
+// }
 
 
 
 function markEditable(that) {
 	gEditableTextId = that.id
-	console.log(that.id,' is now editable')
-	// var texts = document.querySelectorAll('.txt')
-	// texts.forEach(function(text){
-	// 	text.classList.remove('editable');
-	// })	
-	// var elId = `#${that.id}`
-	// document.querySelector(elId).classList.add('editable'); 
 }
 
 
@@ -294,20 +321,4 @@ function getTextWidth(textObj) {
 	var metrics = ctx.measureText(textObj.line);
 	return metrics.width + 20;
 };
-
-
-// $('input').on('keydown', function(evt) {
-//     var $this = $(this),
-//         size = parseInt($this.attr('size'), 10),
-//         isValidKey = (evt.which >= 65 && evt.which <= 90) || // a-zA-Z
-//                      (evt.which >= 48 && evt.which <= 57) || // 0-9
-//                      evt.which === 32;
-
-//     if ( evt.which === 8 && size > 0 ) {
-//         // backspace
-//         $this.attr('size', size - 1);
-//     } else if ( isValidKey ) {
-//         // all other keystrokes
-//         $this.attr('size', size + 1);
-//     }
-// });
+ 

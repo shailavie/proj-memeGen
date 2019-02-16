@@ -23,10 +23,7 @@
     margin: 0;
 }
 
-label {
-    font-family: zcoolq;
-    color:white;
-}
+ 
 
 
 .logo {
@@ -66,6 +63,76 @@ label {
 }
 
 
+
+.text-controllers {
+    /* position: absolute; */
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    justify-content:space-evenly;
+    flex-direction: row;
+    width: auto;
+    height: 50px;
+    background-color: whitesmoke;
+    color: black;
+    border-radius: 5px;
+    z-index: 2;
+    border: 1px solid black;
+    transition-duration: all 0.5s;
+}
+
+.btn-txt-ctrl {
+    height: 30px;
+    margin: 0 2px;
+    width: auto;
+    font-size: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 5px;
+    color:white;
+    background-color: #6a474d;
+    cursor: pointer;
+    transition-duration: all 0.3s;
+}
+
+.btn-txt-ctrl:hover {
+    background-color: #b4979d;
+}
+
+ 
+option {
+    /* color:black;
+    background-color: red; */
+}
+
+.close-controls {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    font-size: 10px;
+    height: 20px;
+    width: 20px;
+    background-color: black;
+    color: white;
+    border-radius: 50px;
+    /* clip-path: circle(40%); */
+    position: absolute;
+    border: 1px solid white;
+    top: -10px;;
+    right: -10px;
+    cursor: pointer;
+}
+
+.color-picker {
+    width: 40px;
+}
+
+label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+
 h1 ,h5 {
     font-family: 'Geostar Fill';
     letter-spacing: 2px;
@@ -88,7 +155,6 @@ h1 ,h5 {
         "app-footer";
     grid-template-rows: auto auto 1fr 80px;
     grid-template-columns: 1fr;
-    /* grid-row-gap: 5px; */
 }
 
 .app-header {
@@ -105,13 +171,13 @@ h1 ,h5 {
     padding-bottom: 10px;
 }
 
-.header-inner-container {
-    /* flex-grow: 1; */
-}
 
 .app-menu {
     grid-area: app-menu;
     background-color: var(--main-bg-color);
+    border-radius: 0;
+    border: none;
+    justify-content: space-between;
 }
 
 .app-menu input, select {
@@ -203,6 +269,7 @@ h1 ,h5 {
 }
 
 
+
 /* helpers */
 
 
@@ -239,8 +306,13 @@ h1 ,h5 {
 .hide {
     /* visibility: hidden; */
     display: none;
+    transition-duration: all 0.5s;
 }
 
 .invisible {
     visibility: hidden;
+}
+
+.absolute {
+    position: absolute;
 }

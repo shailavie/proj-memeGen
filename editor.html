@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Meme Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="stylesheet" type="text/css" media="screen" href="css/helpers.css"> -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
     <link rel="stylesheet" type="text/css" media="screen" href="css/editor.css">
     <link rel="icon" href="img/memeGen.ico" type="image/gif" sizes="16x16">
 </head>
@@ -22,40 +22,56 @@
                 <div class="main-buttons flex row">
                     <button class="btn generateBtn" onclick="generateMeme()">Save Texts 💾</button>
                     <button class="btn" onclick="window.location.href='index.html'">Change Image ⭮</button>
-                    <div class="btn download hide"><a onclick="onDownloadImage(this)">Download</a></div>
-                    <button class="btn" onclick="onAddText()">Add Text</button>
-                    <!-- <button class="btn" onclick="init()">Reset</button> -->
-                    <button class="btn" onmousedown="onIncreaseFont()">+</button>
-                    <button class="btn" onmousedown="onDecreaseFont()">-</button>
-                    <button class="btn" onclick="onDeleteText()">Delete</button>
-                    <label>✎ Text Color
-                            <input type="color" class="text-color" onchange="onChangeColorText(this.value)">
-                        </label>
-                    <select onchange="onChangeFontText(this.value)">
-                        <option value="Impact" style="font-family:Impact; font-size: 14px">Impact</option>
-                        <option value="Tahoma" style="font-family:Tahoma; font-size: 14px">Tahoma</option>
-                        <option value="Arial" style="font-family:Arial; font-size: 14px">Arial</option>
-                        <option value="zcoolq" style="font-family:zcoolq; font-size: 14px">zcoolq</option>
-                    </select>
+                    <div class="btn flex center-all download hide"><a onclick="onDownloadImage(this)">Download</a></div>
+                    <button class="btn add-text" onclick="onAddText()">Add Text</button>
+
+                    <!-- ✎ Text controllers ✎ -->
+                    <div class="text-controllers absolute hide">
+                        <button class="btn-txt-ctrl" onmousedown="onIncreaseFont()">+</button>
+                        <button class="btn-txt-ctrl" onmousedown="onDecreaseFont()">-</button>
+                        <select class="btn-txt-ctrl" onchange="onChangeFontText(this.value)">
+                            <option value="Impact" style="font-family:Impact; font-size: 14px">Impact</option>
+                            <option value="Tahoma" style="font-family:Tahoma; font-size: 14px">Tahoma</option>
+                            <option value="Arial" style="font-family:Arial; font-size: 14px">Arial</option>
+                            <option value="zcoolq" style="font-family:zcoolq; font-size: 14px">zcoolq</option>
+                        </select>
+                        <button class="btn-txt-ctrl" value='left' onclick="onChangeAlignText(this.value)">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <button class="btn-txt-ctrl" value='center' onclick="onChangeAlignText(this.value)">
+                            <i class="fas fa-align-center"></i>
+                        </button>
+                        <button class="btn-txt-ctrl" value='right' onclick="onChangeAlignText(this.value)">
+                            <i class="fas fa-align-right"></i>
+                        </button>
+                        <!-- <label>
+                            <input type="color" class="btn-txt-ctrl color-picker" onchange="onChangeColorText(this.value)">
+                        </label> -->
+                        <button class="btn-txt-ctrl" onclick="onDeleteText()">Delete</button>
+                        <div class="close-controls" onclick="hideTextControls()"><i class="fas fa-times"></i></div>
+                    </div>
+                    <!-- ✎ end of Text controllers ✎ -->
                 </div>
             </div>
         </header>
 
         <!-- Canvas Controllers -->
-        <section class="app-menu flex row center-all">
+        <section class="text-controllers app-menu flex row center-all">
             <div class="canvas-controls flex row center-all hide">
                 <label>✎ Stroke
-                    <input type="color" class="draw-color" onchange="onColorChange(this.value, 'stroke')">
+                    <input type="color" class="draw-color btn-txt-ctrl color-picker"
+                        onchange="onColorChange(this.value, 'stroke')">
                 </label>
                 <label>✎ Filler
-                    <input type="color" class="draw-color" onchange="onColorChange(this.value, 'fill')">
+                    <input type="color" class="draw-color btn-txt-ctrl color-picker"
+                        onchange="onColorChange(this.value, 'fill')">
                 </label>
-                <button onclick="onResetCanvas()" class="btn btn-sm">Reset</button>
-                <select onchange="onChooseDrawTool(this.value)">
+                <select class="btn-txt-ctrl" onchange="onChooseDrawTool(this.value)">
                     <option value="pencil">✏ Pencil</option>
                     <option value="brush">▆ Brush</option>
                     <option value="rect">▯ Rectangle</option>
                 </select>
+                <button onclick="onResetCanvas()" class="btn btn-sm btn-txt-ctrl">Reset</button>
             </div>
         </section>
 
@@ -80,7 +96,7 @@
     <script src="js/app-controller.js"></script>
     <script src="js/editor.js"></script>
     <script src="js/drag-drop-functions.js"></script>
-    
+
 
 </body>
 
