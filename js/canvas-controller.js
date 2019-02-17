@@ -18,6 +18,13 @@ function renderCanvas() {
 }
 
 
+
+function onResetCanvas() {
+	generateMeme()
+	generateMeme()
+}
+
+
 function drawlines() {
     var lines = gMeme.txts;
     lines.forEach(function (line) {

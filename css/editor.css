@@ -12,8 +12,17 @@
     src: url('../fonts/Raleway/Raleway-Thin.ttf');
 }
 
+
+@media (min-width: 540px){
+    body {
+        /* background-color: yellow; */
+    }
+
+}
+
 :root {
     --main-bg-color: #e84c3d;
+    /* --mobile-width: 540px; */
   }
 
 /* Layout */
@@ -23,18 +32,111 @@
     margin: 0;
 }
 
- 
+
+h1 ,h5 {
+    font-family: 'Geostar Fill';
+    letter-spacing: 2px;
+    color:white;
+    margin-bottom: 10px;
+    text-decoration: none;
+    text-align: center;
+}
+h1 {
+    font-size: 20px;
+}
+@media (min-width: 540px){
+    h1 ,h5 {
+        text-align: left;
+    }
+    h1 {
+        font-size: 36px;
+    }
+}
+
+
+
+
+/* App */
+.container {
+    display: grid;
+    height: 100vh;
+    grid-template-areas: 
+        "app-header"
+        "app-menu"
+        "canvas"
+        "app-footer";
+    grid-template-rows: auto auto 1fr 70px;
+    grid-template-columns: 100%;
+}
+@media (min-width: 540px){
+    .container {
+        grid-template-rows: auto auto 1fr 80px;
+        grid-template-columns: 1fr;
+    }
+}
+
+.app-header {
+    grid-area: app-header;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    background-color: var(--main-bg-color);
+    padding: 0 10px;
+    text-align: center;
+    padding-bottom: 10px;
+} 
+@media (min-width: 540px){
+    .app-header {
+        flex-direction: row;
+    }
+}
+
+.header-inner-container {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+@media (min-width: 540px){
+    .header-inner-container {
+        flex-direction: column;
+    }  
+}
+
+
+
+
+.app-menu input, select {
+    cursor: pointer;
+}
+
+.app-menu select {
+    height: 25px;
+}
+
+
+
+
+
+/* Controllers */
 
 
 .logo {
-    min-width: 80px;
-    min-height: 80px;
-    width: 100px;
-    height: 100px;
-    margin: 10px 30px;
-  
+    width: 70px;
+    height: 70px;
+    margin: 5px 15px;
 }
-
+@media (min-width: 540px){
+    .logo {
+        min-width: 80px;
+        min-height: 80px;
+        width: 100px;
+        height: 100px;
+        margin: 10px 30px;   
+}
+}
 .btn {
     height: auto;
     width: auto;
@@ -44,11 +146,21 @@
     background-color: #6a474d ;
     cursor: pointer;
     text-align: center;
-    margin-right: 10px;
+    margin-right: 5px;
     font-family: zcoolq;
-    font-size: 20px;
-    padding: 10px 20px;
+    font-size: 14px;
+    padding: 5px 5px;
+    min-width: 48px;
+    min-width: 48px;
     transition: all .3s;
+}
+
+@media (min-width: 540px) {
+    .btn {
+        font-size: 20px;
+        padding: 10px 20px;
+        margin-right: 10px;
+    }
 }
 
 .btn:hover {
@@ -97,6 +209,16 @@
     transition-duration: all 0.5s;
 }
 
+
+.app-menu {
+    grid-area: app-menu;
+    background-color: var(--main-bg-color);
+    border-radius: 0;
+    border: none;
+    justify-content: space-between;
+}
+
+
 .btn-txt-ctrl {
     height: 30px;
     margin: 0 2px;
@@ -114,11 +236,6 @@
     background-color: #b4979d;
 }
 
- 
-option {
-    /* color:black;
-    background-color: red; */
-}
 
 .close-controls {
     display: flex;
@@ -154,11 +271,26 @@ option {
     top: 50%;
     left: 50%;
     transform: translate(-50% ,-50%);
+    border:1px solid black;
+    padding: 20px;
+}
+@media (min-width: 540px){
+    .prop-container {
+        grid-template-columns: repeat(5,150px);
+        grid-template-rows: repeat(3,150px);
+    }
 }
 
 
-.prop {
+
+.prop-gallery{
     width: 100px;
+    height: auto;
+    transition: 0.3s ease;
+}
+
+.prop-gallery:hover{
+    width: 150px;
     height: auto;
 }
 
@@ -172,59 +304,8 @@ label {
 }
 
 
-h1 ,h5 {
-    font-family: 'Geostar Fill';
-    letter-spacing: 2px;
-    color:white;
-    margin-bottom: 10px;
-    text-decoration: none;
-    text-align: left;
-}
 
 
-/* App */
-.container {
-    display: grid;
-    height: 100vh;
-    grid-template-areas: 
-        "app-header"
-        "app-menu"
-        "canvas"
-        "app-footer";
-    grid-template-rows: auto auto 1fr 80px;
-    grid-template-columns: 1fr;
-}
-
-.app-header {
-    grid-area: app-header;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: auto;
-    background-color: var(--main-bg-color);
-    padding: 0 10px;
-    text-align: center;
-    padding-bottom: 10px;
-}
-
-
-.app-menu {
-    grid-area: app-menu;
-    background-color: var(--main-bg-color);
-    border-radius: 0;
-    border: none;
-    justify-content: space-between;
-}
-
-.app-menu input, select {
-    cursor: pointer;
-}
-
-.app-menu select {
-    height: 25px;
-}
 
 /* Canvas */
 
@@ -238,6 +319,8 @@ h1 ,h5 {
 .app-footer {
     grid-area: app-footer;
     background-color: var(--main-bg-color);
+    /* align-items: center; */
+    padding: 10px;
     width: 100%;
     text-align: center;
 }
@@ -245,6 +328,7 @@ h1 ,h5 {
 /* Buttons */
 
  footer h5 {
+     padding: 5px;
      font-family: Raleway-Thin;
      color: white;
  }
@@ -353,4 +437,11 @@ h1 ,h5 {
 
 .absolute {
     position: absolute;
+}
+
+
+@media (min-width: 540px){
+    body {
+        /* background-color: yellow; */
+    }
 }

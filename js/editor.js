@@ -5,6 +5,7 @@
 var gMemeImgSrc;
 var gIsMemeReady;
 var gEditableTextId;
+var gPropsCount = 13;
 // var gImgs = [{ id: 1, url: 'img/popo.jpg', keywords: ['happy'] }];
 var gMeme = {
 	selectedImgId: getImgId(),
@@ -65,7 +66,8 @@ function renderImg() {
 	document.querySelector('.meme-container').innerHTML = strHtml;
 }
 
-// This function renders the default top and bottom lines, at image center, with a font-size padding from top and bottom
+
+// This function calls for master functions renders all elements in the model to the main Meme container
 function renderItems() {
 	document.querySelector('.meme-container').innerHTML = ''
 	var strHtml = renderLines()
@@ -215,24 +217,6 @@ function onRotateProp(element,value) {
 	renderItems()
 }
 
- 
-
-
-// onmousedown="onChangeItemValue(${elId},'txts','size',1)"
-// function onChangeItemValue(itemId,type,prop,value){
-// 	console.log(itemId.id,type,prop,value);
-// 	var itemIdx = getItemIdxByIdAndType(itemId.id,type)
-// 	if (prop === 'size') {
-// 		gMeme[type][itemIdx][prop] += value;
-// 		gMeme[type][itemIdx]['width'] += value
-// 	} else {
-// 		gMeme[type][itemIdx][prop] = value;
-// 	}
-// 	renderItems();
-// }
-
-
-
 
 function onDeleteItem(element, type) {
 	var elementId = element.id+''
@@ -250,7 +234,9 @@ function hideModal(modalClass) {
 }
 
 
-
+///////////////////////////////////////
+/////// Text Controls Functions ///////
+///////////////////////////////////////
 
 
 function onIncreaseFont() {
@@ -295,23 +281,32 @@ function onChangeAlignText(selectedAlign) {
 }
 
 
+function onChangeFontText(selectedFont) {
+	var elId = `#${gEditableTextId}`
+	var text = document.querySelector(elId);
+	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
+	var textModel = gMeme.txts[textIdx]
+	textModel.font = selectedFont
+	renderItems()
+}
 
 
-
+///////////////////////////////
+/////// Props Functions ///////
+///////////////////////////////
 
 function onAddProps() {
 	var elPropCnt = document.querySelector('.prop-container')
 	var strHtml = ''
-	for (let i = 0; i < 7; i++) {
+	for (let i = 0; i < gPropsCount; i++) {
 		strHtml +=
-			`<img onclick="onAddProp(this)" class="prop" type="props" id="${i}" src="img/addons/${i}.png" >`
+			`<img onclick="onAddProp(this)" class="prop-gallery" type="props" id="${i}" src="img/addons/${i}.png" >`
 	}
 	strHtml += `<div class="close-controls" onclick="hideModal('.prop-container')"><i class="fas fa-times"></i></div>`
 	elPropCnt.innerHTML = strHtml;
 	elPropCnt.classList.remove('hide')
 }
-
-
+ 
 
 function onAddProp(prop) {
 	var prop = {
@@ -323,34 +318,9 @@ function onAddProp(prop) {
 		rotate: 0
 	}
 	gMeme.props.push(prop)
+	hideModal('.prop-container')
 	renderItems()
 }
-
-
-
-
-function onChangeFontText(selectedFont) {
-	var elId = `#${gEditableTextId}`
-	var text = document.querySelector(elId);
-	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
-	var textModel = gMeme.txts[textIdx]
-	textModel.font = selectedFont
-	renderItems()
-}
-
-
-function onResetCanvas() {
-	generateMeme()
-	generateMeme()
-}
-
-
-
-
-
-// function updateModelText(textId, prop, value) {
-
-// }
 
 
 
@@ -384,7 +354,6 @@ function updateItemPos(element) {
 	var itemPos = element.getBoundingClientRect();
 	var itemId = element.id
 	var type = element.dataset.type;
-	// console.log('type is',type)
 	var itemIdx = getItemIdxByIdAndType(itemId, type)
 	var itemModel = gMeme[type][itemIdx]
 	itemModel.top = itemPos.top - imgPos.top;
@@ -393,6 +362,7 @@ function updateItemPos(element) {
 	if (type === 'props') itemModel.height = itemPos.height;
 }
 
+
 //Service function
 function getItemIdxByIdAndType(id, type) {
 	return gMeme[type].findIndex(function (item) {
@@ -400,6 +370,12 @@ function getItemIdxByIdAndType(id, type) {
 	})
 }
 
+
+
+
+///////////////////////////////
+//////// Core Functions ///////
+///////////////////////////////
 
 
 //This function updates the model every time a line text has been changed
@@ -443,9 +419,6 @@ function generateMeme() {
 }
 
 
-
-
-
 //This function handles the meme downloading process
 function onDownloadImage(elLink) {
 	if (!gCanvas) {
@@ -466,6 +439,7 @@ function onDownloadImageNow(elLink) {
 		elLink.download = `${name}.jpg`
 	}, 500);
 }
+
 
 //This function uses a dummy canvas to calculate text measurement
 function getTextWidth(textObj) {
