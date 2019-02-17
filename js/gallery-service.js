@@ -2,12 +2,11 @@
 
 var gNextId = 0
 var gImgs = [];
-
 var gKeyWords = [
 ['xzibit','dawg'],
 ['butterfly','anime'],
 ['child','africa'],
-['did','smile'],
+['fry','sure'],
 ['nicholas','cage'],
 ['aliens','history'],
 ['success','kid'],
@@ -17,7 +16,16 @@ var gKeyWords = [
 ['satisfied','seal'],
 ['austin','powers','behave'],
 ['scumbag','steve'],
-['happy','africa']
+['happy','africa'],
+['crying','pathetic','dawson'],
+['misfortune','unlucky'],
+['when','usually'],
+['picard','face','palm'],
+['ernie','facepalm'],
+['count','calcula'],
+['bert','easedrop'],
+['lebowsky','goodman'],
+['only','one']
 ];
 
 function init(){
@@ -33,7 +41,7 @@ function createImg(id) {
     }
 }
 function createImages() {
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 22; i++) {
         let img = createImg(gNextId);
         img.keywords = gKeyWords[i];
         gNextId++;
@@ -51,7 +59,6 @@ function getImages(){
 
 function addMeme(url,keyWords){
     var newImage = createImg(gNextId);
-    console.log(newImage);
     newImage.url = url;
     gKeyWords.push(keyWords);
     newImage.keywords = keyWords; 

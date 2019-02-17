@@ -20,6 +20,7 @@ function renderGallery() {
         gImgs.map(function (img) {
             strHtml += `<a href="editor.html?${img.id}"><img class="my-slides"  src="${img.url}" alt="">
             <div class="img-details flex wrap">Keywords: ${img.keywords.join(', ')}</div></a>`;
+            console.log(img);
         })
         elGallery.innerHTML=strHtml;
     }
@@ -113,7 +114,7 @@ function renderWordCloud() {
     let color = getRandomColor();
     let searches = (!loadFromLocalStorage('searches')) ? [] : loadFromLocalStorage('searches');
     let strHtmls = (!loadFromLocalStorage('html-strs')) ? [] : loadFromLocalStorage('html-strs');
-    let strHtml = `<span onclick="filterFromCloud('${str}')"><font size="${gSearchedWords[str]}" 
+    let strHtml = `<span class="cloud-words" onclick="filterFromCloud('${str}')"><font size="${gSearchedWords[str]}" 
     color="${color}">${str}</font></span>`;
 
     let idx = searches.findIndex(function (search) {
@@ -138,11 +139,21 @@ function filterFromCloud(str) {
     onSearchStr();
 }
 
+function onShowDiv(num){
+    let elDiv =  document.querySelectorAll('.to-gallery');
+    elDiv[num].classList.remove('hide');
+}
+
+function onHideDiv(num){
+    let elDiv = document.querySelectorAll('.to-gallery');
+    elDiv[num].classList.add('hide');
+}
+
 /// UPLOAD 
 
 
 function onHandleUpload() {
-    let str = prompt('Describe your memein two words');
+    let str = prompt('Describe your meme in two words');
     str = str.toLowerCase();
     let keywords = str.split(' ');
     const selectedFile = document.getElementById('add_meme').files[0];

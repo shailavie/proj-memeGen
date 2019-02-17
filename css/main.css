@@ -1,7 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Geostar+Fill');
+
+
 @font-face{
     font-family: libre;
     src: url(../fonts/LibreBarcode39Text-Regular.ttf);
 }
+
+@font-face {
+    font-family: felipa;
+    src: url(../fonts/Felipa-Regular.ttf);
+}
+
 
 * > * {
     box-sizing: border-box;
@@ -23,6 +32,8 @@ a {
 }
 
 header {
+    line-height: 100%;
+    vertical-align: 50%;
     grid-area: header;
     background-color: #e84c3d;
         animation: colorchange 10s; /* animation-name followed by duration in seconds*/
@@ -54,7 +65,8 @@ header {
  
 
 h1  {
-    margin: 20px;
+    font-family: 'Geostar Fill';
+    margin: 20px 20px;
     text-align: center;
     font-size: 50px;
 
@@ -129,6 +141,7 @@ nav > * {
 input {
     outline: none;
     height: 25px;
+    background-color: white;
 }
 span {
     float: right;
@@ -146,6 +159,17 @@ section {
 
 }
 
+ul > li {
+    margin: 0 20px;
+    padding: 0 5px;
+    transition: .2s;
+    
+}
+ul > li:hover {
+    font-weight: bold;
+    transition: .2s;
+}
+
 .searchbox-container {
     height: 20px;
 }
@@ -154,6 +178,11 @@ section {
 
 .searchBox span {
     cursor: pointer;
+}
+
+strong {
+    background-color: white;
+    z-index: 10;
 }
 
 main {
@@ -200,16 +229,24 @@ aside {
 }
 
 @media (max-width: 1000px){
-    .gallery-grid{
-        grid-template-rows: repeat(4,0.25fr);
-        grid-template-columns: repeat(4,0.25fr); 
+
+    }
+    .gallery-grid {
+        grid-template-rows: repeat(5,0.25fr);
+        grid-template-columns: repeat(5,0.5fr); 
+    }
+    .gallery-container{
+        height: 100vh;
+    }
+    main {
+        height: 100vh;
     }
 }
 
 @media (max-width: 800px){
     .gallery-grid{
         grid-template-rows: repeat(5,0.25fr);
-        grid-template-columns: repeat(3,0.25fr); 
+        grid-template-columns: repeat(5,0.25fr); 
     }
 
 }
@@ -240,9 +277,14 @@ aside {
     text-align: center;
 }    
 
+.cloud-words {
+    text-align: center; 
+}
 
-
-
+.word-cloud-container{
+    text-align: center;
+    margin: auto 0;
+}
 
 
 .gallery-container img { 
@@ -308,6 +350,7 @@ aside {
     /* grid-area: main; */
     border: 1px solid black;
     padding-left: 10px;
+    font-family: felipa;
     font-size: 1.5em;
     line-height: 30px;
     text-align: left;
@@ -319,6 +362,12 @@ aside {
     width: 100px;
     height: 100px;
     border-radius: 50%;
+    /* padding: 0 auto; */
+}
+
+.to-gallery {
+    font-family: cursive;
+    font-size: 0.5em;
 }
 
 .about-us h3 {
@@ -332,16 +381,25 @@ aside {
     /* left: 50%; */
 }
 
-.about-us .card{
-    padding-bottom: 20px;
+ .card {
+    margin: 20px auto;
+    padding: 20px 10px;
+    width: 200px;
+    height: 250px;
     border: 1px solid black;
+    box-shadow: 2px 2px black;
+    border-radius: 3px;
     /* background-color: rgba(0, 0, 0, 0.5); */
     /* flex: 1; */
 }
 
+.about-us .contact {
+    padding: 0 auto;
+}
+
+
 .about-link {
     text-decoration: none;
-
 }
 
 .gallery-link {
@@ -382,17 +440,17 @@ i {
     cursor: pointer;
 }
 
-#autocomplete-list:hover{
+#autocomplete-list > *{
     display: block;
     background-color: white !important;
 }
 
-.autocomplete-active:hover {
+.autocomplete-active > * {
     display: block;
     background-color: white !important;
 }
 
-[attribute="DOMStringMap"] {
+[attribute="DOMStringMap"] > * {
     background-color: white !important;
    
 }
@@ -434,6 +492,53 @@ i {
     display: none;
 }
 
-.wrap {
+.wrapper {
     flex-flow: wrap;
 }
+
+.wrapper {
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    position: relative;
+    overflow: hidden;
+  }
+  .wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: auto;
+  }
+  .wrapper:before {
+    content: "";
+    z-index: 10;
+    position: absolute;
+    height: 200%;
+    width: 200%;
+    top: -120%;
+    left: -120%;
+    background: linear-gradient(transparent 0%, rgba(255, 255, 255, 0.1) 45%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.1) 55%, transparent 100%);
+    transition: all 2s;
+    transform: rotate(-45deg);
+    animation: shine 6s infinite forwards;
+  }
+  @keyframes shine {
+    0% {
+      top: -120%;
+      left: -120%;
+    }
+    20% {
+      left: 100%;
+      top: 100%;
+    }
+    40% {
+      left: 100%;
+      top: 100%;
+    }
+    100% {
+      left: 100%;
+      top: 100%;
+    }
+  }
+ 
