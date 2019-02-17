@@ -26,6 +26,8 @@
                     <button class="btn" onclick="window.location.href='index.html'">Change Image&nbsp;<i class="fas fa-exchange-alt"></i></button>
                     <div class="btn flex center-all download"><a onclick="onDownloadImage(this)">Download</a></div>
                     <div class="btn flex center-all Share"><a onclick="onShareImage(this)">Share to fb</a></div>
+                    <div id="fb-root"></div>
+                    <div class="share-container"></div>
                     <!-- <div class="btn flex center-all download"><a onclick="onDownloadImageNow(this)">Download Now</a></div> -->
                     <button class="btn add-text" onclick="onAddText()">Add Text</button>
                     <button class="btn add-prop" onclick="onAddProps()">Add Props</button>
@@ -73,6 +75,19 @@
         </footer>
     </div>
 
+    <!-- Experimental Section to share on FB -->
+    <input type="file" name="image" onchange="onFileInputChange(event)" />
+    <a id="potato" href="">batata</a>
+    <form action="" method="POST" enctype="multipart/form-data" onsubmit="uploadImg(this, event)">
+      <input name="img" id="imgData" type="hidden"/>
+      <button type="submit">Publish</button>
+    </form>
+    <canvas id="myCanvas" width="400" height="400" style="outline:1px solid green"></canvas>
+  
+    <br>
+    <a href="#" onclick="downloadImg(this)" download="my-img.jpg" >
+      Download as jpeg
+    </a>  
     <script src="lib/jquery/jquery.js"></script>
     <script src="js/util.js"></script>
     <script src="js/user-controller.js"></script>

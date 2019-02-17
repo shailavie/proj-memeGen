@@ -378,6 +378,18 @@ function getItemIdxByIdAndType(id, type) {
 ///////////////////////////////
 
 
+//This function uses a dummy canvas to calculate text measurement
+function getTextWidth(textObj) {
+	// if given, use cached canvas for better performance
+	// else, create new canvas
+	var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+	var ctx = canvas.getContext('2d');
+	ctx.font = `${textObj.size}px ${textObj.font}`;
+	var metrics = ctx.measureText(textObj.line);
+	return metrics.width + 20;
+}
+
+
 //This function updates the model every time a line text has been changed
 function updateLineText(line) {
 	var type = line.dataset.type
@@ -432,50 +444,125 @@ function onDownloadImage(elLink) {
 	}, 500);
 }
 
+//Redundent function
+// function onDownloadImageNow(elLink) {
+// 	generateMeme();
+// 	setTimeout(() => {
+// 		elLink.href = gCanvas.toDataURL()
+// 		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
+// 		elLink.download = `${name}.jpg`
+// 	}, 500);
+// }
+
+
+
+///////////////////////////////////
+//////// FB Share Functions ///////
+///////////////////////////////////
+
+var canvas = document.getElementById('myCanvas');
+var ctx = canvas.getContext('2d');
+
 function onShareImage(elFbLink) {
 	console.log(elFbLink)
 	postCanvasToFacebook()
-	// if (!gCanvas) {
-	// 	generateMeme()
-	// }
-	// setTimeout(() => {
-	// 	elFbLink.href = gCanvas.toDataURL()
-	// 	console.log('img url', elFbLink.href)
-	// 	// var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
-	// 	// elLink.download = `${name}.jpg`
-	// }, 500);
+
+	uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
+	document.querySelector('.share-container').innerHTML = `
+	<a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
+	   Share
+	</a>`
+}
+ 
+
+// on submit call to this function
+function uploadImg(elForm, ev) {
+	ev.preventDefault();
+	
+	var x = document.getElementById('potato');
+	x.href = gCanvas.toDataURL("image/jpeg");
+	console.log('x btatat',x.href)
+	console.log('uploadImg is happening')
+	console.log('elForm',elForm)
+	console.log('ev',ev)
+
+	document.getElementById('imgData').value = gCanvas.toDataURL("image/jpeg");
+	var elImgData = document.getElementById('imgData').value
+	console.log(elImgData);
+   
+    // A function to be called if request succeeds
+    function onSuccess(uploadedImgUrl) {
+        console.log('POTATO!!!', uploadedImgUrl);
+
+        uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
+        document.querySelector('.share-container').innerHTML = `
+        <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
+           Share   
+        </a>`
+    }
+
+    doUploadImg(elForm, onSuccess);
 }
 
-function postCanvasToFacebook() {
-	var data = gCanvas.toDataURL("image/png");
-	var encodedPng = data.substring(data.indexOf(',') + 1, data.length);
-	var decodedPng = Base64Binary.decode(encodedPng);
-	FB.getLoginStatus(function (response) {
-		if (response.status === "connected") {
-			postImageToFacebook(response.authResponse.accessToken, "heroesgenerator", "image/png", decodedPng, "www.heroesgenerator.com");
-		}
-	})
+function doUploadImg(elForm, onSuccess) {
+    var formData = new FormData(elForm);
+
+    fetch('http://ca-upload.com/here/upload.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(function (response) {
+        return response.text()
+    })
+    .then(onSuccess)
+    .catch(function (error) {
+        console.error(error)
+    })
 }
 
 
 
-function onDownloadImageNow(elLink) {
-	generateMeme();
-	setTimeout(() => {
-		elLink.href = gCanvas.toDataURL()
-		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
-		elLink.download = `${name}.jpg`
-	}, 500);
+
+
+// facebook api
+(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/he_IL/sdk.js#xfbml=1&version=v3.0&appId=807866106076694&autoLogAppEvents=1';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+
+
+  //MAIN
+
+  
+function renderCanvas2(img) {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+}
+
+function onFileInputChange(ev) {
+    handleImageFromInput(ev, renderCanvas)
+}
+
+function downloadImg(elLink) {
+    var imgContent = canvas.toDataURL('image/jpeg');
+    elLink.href = imgContent
 }
 
 
-//This function uses a dummy canvas to calculate text measurement
-function getTextWidth(textObj) {
-	// if given, use cached canvas for better performance
-	// else, create new canvas
-	var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-	var ctx = canvas.getContext('2d');
-	ctx.font = `${textObj.size}px ${textObj.font}`;
-	var metrics = ctx.measureText(textObj.line);
-	return metrics.width + 20;
-};
+//UPLOAD IMG WITH INPUT FILE
+function handleImageFromInput(ev, onImageReady) {
+    document.querySelector('.share-container').innerHTML = ''
+    var reader = new FileReader();
+    console.log(ev)
+    reader.onload = function (event) {
+        var img = new Image();
+        img.onload = onImageReady.bind(null, img)
+        img.src = event.target.result;
+    }
+    reader.readAsDataURL(ev.target.files[0]);
+}
