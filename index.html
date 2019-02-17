@@ -26,31 +26,24 @@
             </form> -->
 
         </header>
-        <nav class="flex col space-around">
+        <nav class="grid">
             <ul class="flex row space-evenly">
                 <li>
                     <a href="#" class="toggle-display-btn" onclick="onToggleDisplay()">Change Display</a>
                 </li>
                 <li>
                     <a href="#upload">UPLOAD IMAGE</a>
-                    <form class="hide" enctype="multipart/form-data" action="/upload/image" method="post">
+                    <form class="hide"  enctype="multipart/form-data" action="/upload/image" method="post">
                         <input id="upload" type="file" />
                     </form>
                 </li>
                 <li>
                     <a href="#about-us" class="about-link" onclick="onToggleInfo()">ABOUT US</a>
                 </li>
-
             </ul>
-
-
         </nav>
-        <!-- <div class="wrapper grid"> -->
 
-        <aside class="word-cloud-container grid">
-            <!-- fucking word cloud! -->
-        </aside>
-        <section class="flex space space-between">
+        <section class="flex  space-between">
             <h2>Choose Meme </h2>
             <div class="searchbox-container">
                 <input class="searchBox" onkeypress="onSearchStr()" type="search" name="search"
@@ -58,7 +51,10 @@
                 <label for="search"><i onclick="onSearchStr()" class="fa fa-search searchIcon"></i></label>
             </div>
         </section>
-        <main class="grid">
+        <aside class="word-cloud-container grid">
+            <!-- fucking word cloud! -->
+        </aside>
+        <main class="flex">
             <button class="w3-button w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
             <div class="gallery-container grid gallery-grid">
                 <!-- gllaery goes here -->
@@ -67,17 +63,16 @@
             <div class="about-us hide">
                 <h3>WHO ARE WE?</h3> <br>
                 <p>
-                    were Shai & Itai, <br>
+                    we're Shai & Itai, <br>
                     digital meme entrepreneurs, css revolutionists, cyber phenomenas and students
                     of the well known "coding academy" establishment. <br>
                     inspired by meme culture, we humbly bring you this meme generator for all your meme-related needs.
                     <bt>
-                        <br><span>ENJOY!</span><br>
-                        <br>
+                        <br>ENJOY!<br>
                         <br>
                         oh, and feel free to browse through our galleries for more projects!
                 </p>
-                <div class="team-cards flex spread-evenly">
+                <div class="team-cards flex space-evenly">
                     <div class="card">
                         <a href="http://"> <img src="./img/team/shai.jpg" alt="Shai's gallery"></a>
                         <div class="contact">
@@ -88,7 +83,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <a href="https://itai-rozen.github.io/git-ex/""> <img src=" ./img/team/itai.jpg"
+                        <a href="https://itai-rozen.github.io/git-ex/"> <img src=" ./img/team/itai.jpg"
                             alt="Itai's gallery"></a>
                         <div class="contact">
                             <a href="http://"><i class="fa fa-facebook"></i></a>
@@ -99,14 +94,13 @@
                     </div>
                 </div>
 
-                </a>
             </div>
-        </main>
-        <!-- </div> -->
+        </div> 
+    </main>
 
-        <footer>
+    <footer>
 
-        </footer>
+    </footer>
     </div>
 
 
