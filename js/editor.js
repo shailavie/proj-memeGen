@@ -1,66 +1,30 @@
 'use strict'
 
 //Model
+var gImgId;
 var gMemeImgSrc;
 var gIsMemeReady;
 var gEditableTextId;
-const PROPS_COUNT = 15;
-var gMeme = {
-	selectedImgId: getImgId(),
-	props: [],
-	txts: [
-		{
-			id: getRandId(),
-			line: 'Top Line',
-			left: 0,
-			top: 0,
-			size: 40,
-			width: 0,
-			align: 'left',
-			color: 'white',
-			strokeColor: 'black',
-			font: 'Impact'
-		},
-		{
-			id: getRandId(),
-			line: 'Bottom Line',
-			left: 0,
-			top: 0,
-			size: 40,
-			width: 0,
-			align: 'left',
-			color: 'white',
-			strokeColor: 'black',
-			font: 'Impact'
-		}
-	]
-}
+const PROPS_COUNT = 16;
 
 
 //Init
 function init() {
 	gIsMemeReady = false;
-	gMemeImgSrc = `img/${gMeme.selectedImgId}.jpg`
-	gEditableTextId = gMeme.txts[0].id;
+	gImgId = getImgId()
+	gMemeImgSrc = `img/${gImgId}.jpg`
+	gEditableTextId;
 	renderImg()
-	var x = setTimeout(() => {
+	var initMeme = setTimeout(() => {
 		setDefaultLinesPos();
 		renderItems();
-		clearTimeout(x);
+		clearTimeout(initMeme);
 	}, 100);
-}
-
-//This function gets and imageId from a URL param
-function getImgId() {
-	var url = window.location.href;
-	var params = url.split('?');
-	var id = params[1];
-	return id;
 }
 
 // This function renders the chosen image, so we can calculate where to position the lines based on its size
 function renderImg() {
-	var strHtml = `<img class="img-container" style="z-index:-1"  id="meme-img" src="img/${gMeme.selectedImgId}.jpg" alt="">`
+	var strHtml = `<img class="img-container" style="z-index:-1"  id="meme-img" src="img/${gImgId}.jpg" alt="">`
 	document.querySelector('.meme-container').innerHTML = strHtml;
 }
 
@@ -70,14 +34,14 @@ function renderItems() {
 	document.querySelector('.meme-container').innerHTML = ''
 	var strHtml = renderLines()
 	strHtml += renderProps()
-	strHtml += `<img class="img-container" id="meme-img" src="img/${gMeme.selectedImgId}.jpg" alt="">`
+	strHtml += `<img class="img-container" id="meme-img" src="img/${gImgId}.jpg" alt="">`
 	document.querySelector('.meme-container').innerHTML = strHtml;
 }
 
 
 function renderProps() {
 	var strHtml = ''
-	var props = gMeme.props;
+	var props = getAllObjs('props') 
 	props.forEach(function (prop) {
 		strHtml += getPropStrHtml(prop);
 	})
@@ -87,7 +51,7 @@ function renderProps() {
 
 function renderLines() {
 	var strHtml = ''
-	var lines = gMeme.txts;
+	var lines = getAllObjs('txts')
 	lines.forEach(function (line) {
 		strHtml += getLineStrHtml(line);
 	})
@@ -95,15 +59,13 @@ function renderLines() {
 }
 
 function getLineStrHtml(line) {
-	// <div class="${line.id}" data-id="${line.id}">
-	// contenteditable="true" 
 	var strHtml = `
 			<input 
 			 class="txt" 
 			 data-type="txts"
 			 data-id="${line.id}"
 			 type="texts"
-			 onClick="markEditable(${line.id}); showTextControls(this)"
+			 onClick="markEditable(${line.id}); closeAllControllers(); showTextControls(this); addBorder(this)"
              onmousedown="dragElement(this)"
              ontouchstart="dragElementMobile(this)"
              onchange="updateLineText(this)"
@@ -114,20 +76,43 @@ function getLineStrHtml(line) {
 			 		 width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
              >
 			 `
-	//  </div>
 	return strHtml
 }
 
+
+function closeAllControllers(){
+	var controllers = document.querySelectorAll('.controllers')
+	controllers.forEach(function (controller){
+		controller.classList.add('hide');
+	})
+}
+
+
+//This function get all items on DOM and remove their borders
+function removeAllBorders(){
+	var props = document.querySelectorAll('.prop')
+	props.forEach(function (prop){
+		prop.classList.remove('border')
+	})
+	var txts = document.querySelectorAll('.txt')
+	txts.forEach(function (txt){
+		txt.classList.remove('border')
+	})
+}
+
+function addBorder(that){
+	removeAllBorders()
+	that.classList.add('border')
+}
+
 function getPropStrHtml(prop) {
-	//  //markEditable(${prop.id}); extracted from 3 lines down
-	// contenteditable="true" 
 	var strHtml = `
 			<img 
 				class="prop"
 				data-type="props"
 				data-id="${prop.id}"
 				type="props"
-				onClick="showPropControls(this)"
+				onClick="closeAllControllers(); showPropControls(this); addBorder(this)"
 				onmousedown="dragElement(this)"
 				ontouchstart="dragElementMobile(this)"
 				id="${prop.id}"
@@ -135,62 +120,47 @@ function getPropStrHtml(prop) {
 				src="img/addons/${prop.srcId}.png"
 			>
 			`
-	// </div>
 	return strHtml;
 }
 
 function onAddText() {
-	var newText = {
-		id: getRandId(),
-		line: 'Enter Text',
-		left: 0,
-		top: 0,
-		size: 40,
-		width: 240,
-		align: 'left',
-		color: 'white',
-		strokeColor: 'black',
-		font: 'Impact'
-	}
-	gMeme.txts.push(newText)
+	addNewText();
 	renderItems()
 }
 
 
 function showTextControls(element) {
 	var strHtml = `
-			<button class="btn-txt-ctrl" onmousedown="onIncreaseFont()" title="Increase font size"><i class="fas fa-plus"></i></button>
-			<button class="btn-txt-ctrl" onmousedown="onDecreaseFont()" title="Decrease font size"><i class="fas fa-minus"></i></button>
-			<select class="btn-txt-ctrl" onchange="onChangeFontText(this.value)" title="Change font">
+			<button class="btn-txt-ctrl" onmousedown="onChangeFontSize(1)" title="Increase font size"><i class="fas fa-plus"></i></button>
+			<button class="btn-txt-ctrl" onmousedown="onChangeFontSize(-1)" title="Decrease font size"><i class="fas fa-minus"></i></button>
+			<select class="btn-txt-ctrl" onchange="onChangeFontFamily(this.value)" title="Change font">
 				<option value="Impact" style="font-family:Impact; font-size: 14px">Impact</option>
 				<option value="Tahoma" style="font-family:Tahoma; font-size: 14px">Tahoma</option>
 				<option value="Arial" style="font-family:Arial; font-size: 14px">Arial</option>
 				<option value="zcoolq" style="font-family:zcoolq; font-size: 14px">zcoolq</option>
 			</select>
-			<button class="btn-txt-ctrl" value='left' onclick="onChangeAlignText(this.value)"title="Align left"><i class="fas fa-align-left"></i></button>
-			<button class="btn-txt-ctrl" value='center' onclick="onChangeAlignText(this.value)"title="Align center"><i class="fas fa-align-center"></i></button>
-			<button class="btn-txt-ctrl" value='right' onclick="onChangeAlignText(this.value)"title="Align right"><i class="fas fa-align-right"></i></button>
+			<button class="btn-txt-ctrl" value='center' onclick="onCenterTextOnImg()"title="Align center"><i class="fas fa-align-center"></i></button>
 			<button class="btn-txt-ctrl" onclick="onDeleteItem(${element.dataset.id},'txts')" title="Delete"><i class="fas fa-trash" ></i></button>
-			<div class="close-controls" data-modal="text-controllers" onclick="hideModal('.text-controllers')" title="close"><i class="fas fa-times"></i></div>`
+			<div class="close-controls" data-modal="text-controllers" onclick="hideModal('.text-controllers'); removeAllBorders()" title="close"><i class="fas fa-times"></i></div>`
 	var txtPos = element.getBoundingClientRect()
 	var elController = document.querySelector('.text-controllers')
 	elController.innerHTML = strHtml;
 	var style = `left: ${txtPos.left - 20}px; top: ${txtPos.top - 70}px`;
 	elController.style.cssText = style;
 	elController.classList.remove('hide')
-	// <label><input type="color" class="btn-txt-ctrl color-picker" onchange="onChangeColorText(this.value)"></label>
 }
 
+ 
 
-//
 function showPropControls(element) {
 	var strHtml = `
 			<button class="btn-txt-ctrl" onmousedown="onChangeSizeProp(${element.id},5)" title="Increase size"><i class="fas fa-plus"></i></button>
 			<button class="btn-txt-ctrl" onmousedown="onChangeSizeProp(${element.id},-5)" title="Decrease size"><i class="fas fa-minus"></i></button>
-			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},5)" title="Rotate">⭮</button>
-			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},-5)" title="Rotate">⭯</button>
+			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},5)" title="Rotate">⤾</button>
+			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},-5)" title="Rotate">⤿</button>
+			<button class="btn-txt-ctrl" value='center' onclick="onCenterPropOnImg(${element.id})"title="Align center"><i class="fas fa-align-center"></i></button>
 			<button class="btn-txt-ctrl" onclick="onDeleteItem(${element.id},'props')" title="Delete"><i class="fas fa-trash" ></i></button>
-			<div class="close-controls" data-modal="prop-controllers" onclick="hideModal('.prop-controllers')" title="close"><i class="fas fa-times"></i></div>`
+			<div class="close-controls" data-modal="prop-controllers" onclick="hideModal('.prop-controllers'); removeAllBorders()" title="close"><i class="fas fa-times"></i></div>`
 	var propPos = element.getBoundingClientRect()
 	var elController = document.querySelector('.prop-controllers')
 	elController.innerHTML = strHtml;
@@ -200,26 +170,35 @@ function showPropControls(element) {
 }
 
 
-
 function onChangeSizeProp(element, value) {
 	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
-	gMeme['props'][itemIdx].width += value
+	updateItem('props', itemIdx, 'width', value)
 	renderItems()
 }
 
 function onRotateProp(element, value) {
 	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
-	gMeme['props'][itemIdx].rotate += value
+	updateItem('props', itemIdx, 'rotate', value)
 	renderItems()
 }
 
 
+function onCenterPropOnImg(element) {
+	var elementId = element.id + ''
+	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
+	var imgPos = document.querySelector('#meme-img').getBoundingClientRect()
+	var propPos = document.getElementById(elementId).getBoundingClientRect();
+	var newLeft = imgPos.width / 2 - propPos.width / 2;
+	setItemValue('props',itemIdx,'left',newLeft)
+	renderItems()
+}
+
 function onDeleteItem(element, type) {
 	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, type)
-	gMeme[type].splice(itemIdx, 1)
+	deleteItem(type, itemIdx)
 	var modalClass = (type === 'txts') ? '.text-controllers' : '.prop-controllers';
 	hideModal(modalClass);
 	renderItems()
@@ -237,54 +216,33 @@ function hideModal(modalClass) {
 ///////////////////////////////////////
 
 
-function onIncreaseFont() {
+function onChangeFontSize(value) {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
 	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
-	var textModel = gMeme.txts[textIdx]
-	textModel.size++
-	textModel.width += 5
+	updateItem('txts', textIdx, 'size', value)
+	updateItem('txts', textIdx, 'width', value * 4)
 	renderItems()
 }
 
 
-function onDecreaseFont() {
+function onCenterTextOnImg() {
+	var imgPos = document.querySelector('#meme-img').getBoundingClientRect()
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
-	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
-	var textModel = gMeme.txts[textIdx]
-	textModel.size--
-	textModel.width--
+	var itemIdx = getItemIdxByIdAndType(text.id, 'txts')
+	var textPos = document.querySelector(elId).getBoundingClientRect();
+	var newLeft = imgPos.width / 2 - textPos.width / 2;
+	setItemValue('txts',itemIdx,'left',newLeft)
 	renderItems()
 }
 
 
-function onChangeColorText(selectedColor) {
+function onChangeFontFamily(selectedFont) {
 	var elId = `#${gEditableTextId}`
 	var text = document.querySelector(elId);
 	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
-	var textModel = gMeme.txts[textIdx]
-	textModel.color = selectedColor
-	renderItems()
-}
-
-
-function onChangeAlignText(selectedAlign) {
-	var elId = `#${gEditableTextId}`
-	var text = document.querySelector(elId);
-	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
-	var textModel = gMeme.txts[textIdx]
-	textModel.align = selectedAlign
-	renderItems()
-}
-
-
-function onChangeFontText(selectedFont) {
-	var elId = `#${gEditableTextId}`
-	var text = document.querySelector(elId);
-	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
-	var textModel = gMeme.txts[textIdx]
-	textModel.font = selectedFont
+	setItemValue('txts',textIdx,'font',selectedFont)
 	renderItems()
 }
 
@@ -307,15 +265,7 @@ function onAddProps() {
 
 
 function onAddProp(prop) {
-	var prop = {
-		id: getRandId(),
-		srcId: prop.id,
-		left: 1,
-		top: 1,
-		width: 100,
-		rotate: 0
-	}
-	gMeme.props.push(prop)
+	addNewProp(prop)
 	hideModal('.prop-container')
 	renderItems()
 }
@@ -323,51 +273,8 @@ function onAddProp(prop) {
 
 
 function markEditable(itemId) {
-	// console.log('im editable now',itemId.id)
-	gEditableTextId = itemId.id //|| gMeme.txts[0].id || gMeme.props[0].id
+	changeEditableText(itemId)
 }
-
-
-//This function calculate the default position of top and bottom default lines
-function setDefaultLinesPos() {
-	var img = document.querySelector('#meme-img')
-	var imgPos = img.getBoundingClientRect();
-	var imgWidth = imgPos.width
-	var imgHeight = imgPos.height
-	var lineTop = gMeme.txts[0];
-	var lineBot = gMeme.txts[1];
-	lineTop.top = lineTop.size;
-	lineBot.top = imgHeight - lineBot.size * 2;
-	lineTop.width = getTextWidth(lineTop);
-	lineBot.width = getTextWidth(lineBot);
-	gMeme.txts[0].left = imgWidth / 2 - lineTop.width / 2;
-	gMeme.txts[1].left = imgWidth / 2 - lineBot.width / 2;
-}
-
-
-
-//This service function to update the Top and Left of an element after it moved
-function updateItemPos(element) {
-	var imgPos = document.querySelector('#meme-img').getBoundingClientRect()
-	var itemPos = element.getBoundingClientRect();
-	var itemId = element.id
-	var type = element.dataset.type;
-	var itemIdx = getItemIdxByIdAndType(itemId, type)
-	var itemModel = gMeme[type][itemIdx]
-	itemModel.top = itemPos.top - imgPos.top;
-	itemModel.left = itemPos.left - imgPos.left;
-	if (type === 'txts') itemModel.width = getTextWidth(itemModel);
-	if (type === 'props') itemModel.height = itemPos.height;
-}
-
-
-//Service function
-function getItemIdxByIdAndType(id, type) {
-	return gMeme[type].findIndex(function (item) {
-		return item.id === id
-	})
-}
-
 
 
 
@@ -394,9 +301,8 @@ function updateLineText(line) {
 	var lineId = line.id
 	var lineTxt = line.value
 	var lineIdx = getItemIdxByIdAndType(lineId, type)
-	var lineModel = gMeme.txts[lineIdx]
-	lineModel.line = lineTxt
-	lineModel.width = getTextWidth(lineModel)
+	setItemValue('txts',lineIdx,'line',lineTxt)
+	updateTextWidth(lineIdx);
 	renderItems();
 }
 
@@ -409,7 +315,7 @@ function generateMeme() {
 		document.querySelector('.canvas-controls').classList.add('hide')
 		document.querySelector('.add-text').classList.remove('hide')
 		document.querySelector('.add-prop').classList.remove('hide')
-		document.querySelector('.generateBtn').innerText = 'Save Texts'
+		document.querySelector('.generateBtn').innerHTML = '<i class="fas fa-palette"></i><br/>Add Drawing'
 		document.querySelector('.download').classList.add('hide')
 		document.querySelector('.fb-share').classList.add('hide')
 	} else {
@@ -417,7 +323,6 @@ function generateMeme() {
 		drawImg()
 		drawlines()
 		drawProps()
-		// hideTextControls();
 		document.querySelector('.meme-container').classList.add('hide')
 		document.querySelector('.add-text').classList.add('hide')
 		document.querySelector('.add-prop').classList.add('hide')
@@ -425,7 +330,7 @@ function generateMeme() {
 		document.querySelector('.canvas-controls').classList.remove('hide')
 		document.querySelector('.download').classList.remove('hide')
 		document.querySelector('.fb-share').classList.remove('hide')
-		document.querySelector('.generateBtn').innerText = 'Edit Texts'
+		document.querySelector('.generateBtn').innerHTML = '<i class="fas fa-edit"></i><br/>Edit Texts'
 	}
 	gIsMemeReady = !gIsMemeReady;
 }
@@ -438,22 +343,11 @@ function onDownloadImage(elLink) {
 	}
 	setTimeout(() => {
 		elLink.href = gCanvas.toDataURL()
-		console.log('img url', elLink.href)
-		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
-		elLink.download = `${name}.jpg`
+		var firstLine = getFirstLine()
+		var fileName = firstLine.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
+		elLink.download = `${fileName}.jpg`
 	}, 500);
 }
-
-//Redundent function
-// function onDownloadImageNow(elLink) {
-// 	generateMeme();
-// 	setTimeout(() => {
-// 		elLink.href = gCanvas.toDataURL()
-// 		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
-// 		elLink.download = `${name}.jpg`
-// 	}, 500);
-// }
-
 
 
 ///////////////////////////////////
@@ -462,54 +356,77 @@ function onDownloadImage(elLink) {
 
 
 function uploadImg(elForm, ev) {
-    ev.preventDefault();
+	ev.preventDefault();
 
-    document.getElementById('imgData').value = document.querySelector('#canvas').toDataURL("image/jpeg");
-   
-    // A function to be called if request succeeds
-    function onSuccess(uploadedImgUrl) {
-        console.log('uploadedImgUrl', uploadedImgUrl);
+	document.getElementById('imgData').value = document.querySelector('#canvas').toDataURL("image/jpeg");
 
-        uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
-        document.querySelector('.share-container').innerHTML = `
+	// A function to be called if request succeeds
+	function onSuccess(uploadedImgUrl) {
+		uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
+		document.querySelector('.share-container').innerHTML = `
         <a class="w-inline-block flex center-all btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
            Share to &nbsp;&nbsp;<i class="fab fa-facebook-f"></i>
-		</a>` 
+		</a>`
 	}
 	// 
 	document.querySelector('.download').classList.add('hide')
 	document.querySelector('.fb-share').classList.add('hide')
 	document.querySelector('.share-container').classList.remove('hide')
 
-    doUploadImg(elForm, onSuccess);
+	doUploadImg(elForm, onSuccess);
 }
 
 
 function doUploadImg(elForm, onSuccess) {
-    var formData = new FormData(elForm);
+	var formData = new FormData(elForm);
 
-    fetch('https://ca-upload.com/here/upload.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(function (response) {
-        return response.text()
-    })
-    .then(onSuccess)
-    .catch(function (error) {
-        console.error(error)
-    })
+	fetch('https://ca-upload.com/here/upload.php', {
+		method: 'POST',
+		body: formData
+	})
+		.then(function (response) {
+			return response.text()
+		})
+		.then(onSuccess)
+		.catch(function (error) {
+			console.error(error)
+		})
 }
 
 
-
-
 // facebook api
-(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = 'https://connect.facebook.net/he_IL/sdk.js#xfbml=1&version=v3.0&appId=807866106076694&autoLogAppEvents=1';
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
- 
+(function (d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) return;
+	js = d.createElement(s); js.id = id;
+	js.src = 'https://connect.facebook.net/he_IL/sdk.js#xfbml=1&version=v3.0&appId=807866106076694&autoLogAppEvents=1';
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+
+
+
+////////////////////////////////////
+///////// Retired Functions/////////
+////////////////////////////////////
+
+/*
+function onChangeAlignText(selectedAlign) {
+	var elId = `#${gEditableTextId}`
+	var text = document.querySelector(elId);
+	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
+	var textModel = gMeme.txts[textIdx]
+	textModel.align = selectedAlign
+	renderItems()
+}
+
+
+function onChangeColorText(selectedColor) {
+	var elId = `#${gEditableTextId}`
+	var text = document.querySelector(elId);
+	var textIdx = getItemIdxByIdAndType(text.id, 'txts')
+	var textModel = gMeme.txts[textIdx]
+	textModel.color = selectedColor
+	renderItems()
+}
+*/
