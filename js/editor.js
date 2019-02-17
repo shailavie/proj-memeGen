@@ -98,9 +98,9 @@ function renderLines() {
 
 function getLineStrHtml(line) {
 	// <div class="${line.id}" data-id="${line.id}">
+	// contenteditable="true" 
 	var strHtml = `
 			<input 
-			 contenteditable="true" 
 			 class="txt" 
 			 data-type="txts"
 			 data-id="${line.id}"
@@ -122,9 +122,9 @@ function getLineStrHtml(line) {
 
 function getPropStrHtml(prop) {
 	//  //markEditable(${prop.id}); extracted from 3 lines down
+	// contenteditable="true" 
 	var strHtml = `
 			<img 
-				contenteditable="true" 
 				class="prop"
 				data-type="props"
 				data-id="${prop.id}"
@@ -411,8 +411,9 @@ function generateMeme() {
 		document.querySelector('.canvas-controls').classList.add('hide')
 		document.querySelector('.add-text').classList.remove('hide')
 		document.querySelector('.add-prop').classList.remove('hide')
-		// document.querySelector('.download').classList.add('hide')
 		document.querySelector('.generateBtn').innerText = 'Save Texts'
+		document.querySelector('.download').classList.add('hide')
+		document.querySelector('.fb-share').classList.add('hide')
 	} else {
 		renderCanvas()
 		drawImg()
@@ -424,7 +425,8 @@ function generateMeme() {
 		document.querySelector('.add-prop').classList.add('hide')
 		document.querySelector('.canvas-container').classList.remove('hide')
 		document.querySelector('.canvas-controls').classList.remove('hide')
-		// document.querySelector('.download').classList.remove('hide')
+		document.querySelector('.download').classList.remove('hide')
+		document.querySelector('.fb-share').classList.remove('hide')
 		document.querySelector('.generateBtn').innerText = 'Edit Texts'
 	}
 	gIsMemeReady = !gIsMemeReady;
@@ -472,10 +474,14 @@ function uploadImg(elForm, ev) {
 
         uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
         document.querySelector('.share-container').innerHTML = `
-        <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
-           Share   
-        </a>`
-    }
+        <a class="w-inline-block flex center-all btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
+           Share to &nbsp;&nbsp;<i class="fab fa-facebook-f"></i>
+		</a>` 
+	}
+	// 
+	document.querySelector('.download').classList.add('hide')
+	document.querySelector('.fb-share').classList.add('hide')
+	document.querySelector('.share-container').classList.remove('hide')
 
     doUploadImg(elForm, onSuccess);
 }
@@ -484,7 +490,7 @@ function uploadImg(elForm, ev) {
 function doUploadImg(elForm, onSuccess) {
     var formData = new FormData(elForm);
 
-    fetch('http://ca-upload.com/here/upload.php', {
+    fetch('https://ca-upload.com/here/upload.php', {
         method: 'POST',
         body: formData
     })
@@ -508,110 +514,4 @@ function doUploadImg(elForm, onSuccess) {
     js.src = 'https://connect.facebook.net/he_IL/sdk.js#xfbml=1&version=v3.0&appId=807866106076694&autoLogAppEvents=1';
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-
-// var canvas = document.getElementById('myCanvas');
-// var ctx = canvas.getContext('2d');
-
-// function onShareImage(elFbLink) {
-// 	console.log(elFbLink)
-// 	postCanvasToFacebook()
-
-// 	uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
-// 	document.querySelector('.share-container').innerHTML = `
-// 	<a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
-// 	   Share
-// 	</a>`
-// }
  
-
-// // on submit call to this function
-// function uploadImg(elForm, ev) {
-// 	ev.preventDefault();
-	
-// 	var x = document.getElementById('potato');
-// 	x.href = gCanvas.toDataURL("image/jpeg");
-// 	console.log('x btatat',x.href)
-// 	console.log('uploadImg is happening')
-// 	console.log('elForm',elForm)
-// 	console.log('ev',ev)
-
-// 	document.getElementById('imgData').value = gCanvas.toDataURL("image/jpeg");
-// 	var elImgData = document.getElementById('imgData').value
-// 	console.log(elImgData);
-   
-//     // A function to be called if request succeeds
-//     function onSuccess(uploadedImgUrl) {
-//         console.log('POTATO!!!', uploadedImgUrl);
-
-//         uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
-//         document.querySelector('.share-container').innerHTML = `
-//         <a class="w-inline-block social-share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
-//            Share   
-//         </a>`
-//     }
-
-//     doUploadImg(elForm, onSuccess);
-// }
-
-// function doUploadImg(elForm, onSuccess) {
-//     var formData = new FormData(elForm);
-
-//     fetch('http://ca-upload.com/here/upload.php', {
-//         method: 'POST',
-//         body: formData
-//     })
-//     .then(function (response) {
-//         return response.text()
-//     })
-//     .then(onSuccess)
-//     .catch(function (error) {
-//         console.error(error)
-//     })
-// }
-
-
-
-
-
-// // facebook api
-// (function(d, s, id) {
-//     var js, fjs = d.getElementsByTagName(s)[0];
-//     if (d.getElementById(id)) return;
-//     js = d.createElement(s); js.id = id;
-//     js.src = 'https://connect.facebook.net/he_IL/sdk.js#xfbml=1&version=v3.0&appId=807866106076694&autoLogAppEvents=1';
-//     fjs.parentNode.insertBefore(js, fjs);
-//   }(document, 'script', 'facebook-jssdk'));
-
-
-
-//   //MAIN
-
-  
-// function renderCanvas2(img) {
-//     canvas.width = img.width;
-//     canvas.height = img.height;
-//     ctx.drawImage(img, 0, 0);
-// }
-
-// function onFileInputChange(ev) {
-//     handleImageFromInput(ev, renderCanvas)
-// }
-
-// function downloadImg(elLink) {
-//     var imgContent = canvas.toDataURL('image/jpeg');
-//     elLink.href = imgContent
-// }
-
-
-// //UPLOAD IMG WITH INPUT FILE
-// function handleImageFromInput(ev, onImageReady) {
-//     document.querySelector('.share-container').innerHTML = ''
-//     var reader = new FileReader();
-//     console.log(ev)
-//     reader.onload = function (event) {
-//         var img = new Image();
-//         img.onload = onImageReady.bind(null, img)
-//         img.src = event.target.result;
-//     }
-//     reader.readAsDataURL(ev.target.files[0]);
-// }
