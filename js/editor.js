@@ -1,12 +1,10 @@
 'use strict'
 
 //Model
-// var gMemeImgId = getImgId()
 var gMemeImgSrc;
 var gIsMemeReady;
 var gEditableTextId;
-var gPropsCount = 13;
-// var gImgs = [{ id: 1, url: 'img/popo.jpg', keywords: ['happy'] }];
+const PROPS_COUNT = 15;
 var gMeme = {
 	selectedImgId: getImgId(),
 	props: [],
@@ -98,9 +96,9 @@ function renderLines() {
 
 function getLineStrHtml(line) {
 	// <div class="${line.id}" data-id="${line.id}">
+	// contenteditable="true" 
 	var strHtml = `
 			<input 
-			 contenteditable="true" 
 			 class="txt" 
 			 data-type="txts"
 			 data-id="${line.id}"
@@ -116,15 +114,15 @@ function getLineStrHtml(line) {
 			 		 width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
              >
 			 `
-            //  </div>
+	//  </div>
 	return strHtml
 }
 
 function getPropStrHtml(prop) {
 	//  //markEditable(${prop.id}); extracted from 3 lines down
+	// contenteditable="true" 
 	var strHtml = `
 			<img 
-				contenteditable="true" 
 				class="prop"
 				data-type="props"
 				data-id="${prop.id}"
@@ -137,7 +135,7 @@ function getPropStrHtml(prop) {
 				src="img/addons/${prop.srcId}.png"
 			>
 			`
-			// </div>
+	// </div>
 	return strHtml;
 }
 
@@ -182,7 +180,7 @@ function showTextControls(element) {
 	elController.classList.remove('hide')
 	// <label><input type="color" class="btn-txt-ctrl color-picker" onchange="onChangeColorText(this.value)"></label>
 }
- 
+
 
 //
 function showPropControls(element) {
@@ -203,15 +201,15 @@ function showPropControls(element) {
 
 
 
-function onChangeSizeProp(element,value) {
-	var elementId = element.id+''
+function onChangeSizeProp(element, value) {
+	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
 	gMeme['props'][itemIdx].width += value
 	renderItems()
 }
 
-function onRotateProp(element,value) {
-	var elementId = element.id+''
+function onRotateProp(element, value) {
+	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
 	gMeme['props'][itemIdx].rotate += value
 	renderItems()
@@ -219,7 +217,7 @@ function onRotateProp(element,value) {
 
 
 function onDeleteItem(element, type) {
-	var elementId = element.id+''
+	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, type)
 	gMeme[type].splice(itemIdx, 1)
 	var modalClass = (type === 'txts') ? '.text-controllers' : '.prop-controllers';
@@ -298,7 +296,7 @@ function onChangeFontText(selectedFont) {
 function onAddProps() {
 	var elPropCnt = document.querySelector('.prop-container')
 	var strHtml = ''
-	for (let i = 0; i < gPropsCount; i++) {
+	for (let i = 0; i < PROPS_COUNT; i++) {
 		strHtml +=
 			`<img onclick="onAddProp(this)" class="prop-gallery" type="props" id="${i}" src="img/addons/${i}.png" >`
 	}
@@ -306,7 +304,7 @@ function onAddProps() {
 	elPropCnt.innerHTML = strHtml;
 	elPropCnt.classList.remove('hide')
 }
- 
+
 
 function onAddProp(prop) {
 	var prop = {
@@ -378,6 +376,18 @@ function getItemIdxByIdAndType(id, type) {
 ///////////////////////////////
 
 
+//This function uses a dummy canvas to calculate text measurement
+function getTextWidth(textObj) {
+	// if given, use cached canvas for better performance
+	// else, create new canvas
+	var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+	var ctx = canvas.getContext('2d');
+	ctx.font = `${textObj.size}px ${textObj.font}`;
+	var metrics = ctx.measureText(textObj.line);
+	return metrics.width + 20;
+}
+
+
 //This function updates the model every time a line text has been changed
 function updateLineText(line) {
 	var type = line.dataset.type
@@ -399,8 +409,9 @@ function generateMeme() {
 		document.querySelector('.canvas-controls').classList.add('hide')
 		document.querySelector('.add-text').classList.remove('hide')
 		document.querySelector('.add-prop').classList.remove('hide')
-		// document.querySelector('.download').classList.add('hide')
 		document.querySelector('.generateBtn').innerText = 'Save Texts'
+		document.querySelector('.download').classList.add('hide')
+		document.querySelector('.fb-share').classList.add('hide')
 	} else {
 		renderCanvas()
 		drawImg()
@@ -412,7 +423,8 @@ function generateMeme() {
 		document.querySelector('.add-prop').classList.add('hide')
 		document.querySelector('.canvas-container').classList.remove('hide')
 		document.querySelector('.canvas-controls').classList.remove('hide')
-		// document.querySelector('.download').classList.remove('hide')
+		document.querySelector('.download').classList.remove('hide')
+		document.querySelector('.fb-share').classList.remove('hide')
 		document.querySelector('.generateBtn').innerText = 'Edit Texts'
 	}
 	gIsMemeReady = !gIsMemeReady;
@@ -426,28 +438,78 @@ function onDownloadImage(elLink) {
 	}
 	setTimeout(() => {
 		elLink.href = gCanvas.toDataURL()
+		console.log('img url', elLink.href)
 		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
 		elLink.download = `${name}.jpg`
 	}, 500);
 }
 
-function onDownloadImageNow(elLink) {
-	generateMeme();
-	setTimeout(() => {
-		elLink.href = gCanvas.toDataURL()
-		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
-		elLink.download = `${name}.jpg`
-	}, 500);
+//Redundent function
+// function onDownloadImageNow(elLink) {
+// 	generateMeme();
+// 	setTimeout(() => {
+// 		elLink.href = gCanvas.toDataURL()
+// 		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
+// 		elLink.download = `${name}.jpg`
+// 	}, 500);
+// }
+
+
+
+///////////////////////////////////
+//////// FB Share Functions ///////
+///////////////////////////////////
+
+
+function uploadImg(elForm, ev) {
+    ev.preventDefault();
+
+    document.getElementById('imgData').value = document.querySelector('#canvas').toDataURL("image/jpeg");
+   
+    // A function to be called if request succeeds
+    function onSuccess(uploadedImgUrl) {
+        console.log('uploadedImgUrl', uploadedImgUrl);
+
+        uploadedImgUrl = encodeURIComponent(uploadedImgUrl)
+        document.querySelector('.share-container').innerHTML = `
+        <a class="w-inline-block flex center-all btn fb" href="https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${uploadedImgUrl}&t=${uploadedImgUrl}'); return false;">
+           Share to &nbsp;&nbsp;<i class="fab fa-facebook-f"></i>
+		</a>` 
+	}
+	// 
+	document.querySelector('.download').classList.add('hide')
+	document.querySelector('.fb-share').classList.add('hide')
+	document.querySelector('.share-container').classList.remove('hide')
+
+    doUploadImg(elForm, onSuccess);
 }
 
 
-//This function uses a dummy canvas to calculate text measurement
-function getTextWidth(textObj) {
-	// if given, use cached canvas for better performance
-	// else, create new canvas
-	var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-	var ctx = canvas.getContext('2d');
-	ctx.font = `${textObj.size}px ${textObj.font}`;
-	var metrics = ctx.measureText(textObj.line);
-	return metrics.width + 20;
-};
+function doUploadImg(elForm, onSuccess) {
+    var formData = new FormData(elForm);
+
+    fetch('https://ca-upload.com/here/upload.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(function (response) {
+        return response.text()
+    })
+    .then(onSuccess)
+    .catch(function (error) {
+        console.error(error)
+    })
+}
+
+
+
+
+// facebook api
+(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/he_IL/sdk.js#xfbml=1&version=v3.0&appId=807866106076694&autoLogAppEvents=1';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+ 
