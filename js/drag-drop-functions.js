@@ -45,7 +45,7 @@
   
       document.onmouseup = null;
       document.onmousemove = null;
-      updateLinePos(elmnt);
+      updateItemPos(elmnt);
     }
   }
  
@@ -90,7 +90,7 @@ function dragElementMobile(elmnt) {
       // stop moving when mouse button is released://
       document.ontouchend = null;
       document.ontouchmove = null;
-      updateLinePos(elmnt);
+      updateItemPos(elmnt);
     }
   }
   
