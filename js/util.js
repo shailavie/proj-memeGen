@@ -14,3 +14,24 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+function saveToLocalStorage(key, value) {
+    value = JSON.stringify(value);
+    localStorage.setItem(key, value);
+}
+
+function loadFromLocalStorage(key) {
+    let val = localStorage.getItem(key);
+    val = JSON.parse(val);
+    return val;
+}
+
+
+function getRandomColor() {
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}

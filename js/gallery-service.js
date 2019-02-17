@@ -13,12 +13,17 @@ var gKeyWords = [
 ['success','kid'],
 ['medival','poetry'],
 ['wonka','telling'],
-['fry','money']
+['fry','money'],
+['satisfied','seal'],
+['austin','powers','behave'],
+['scumbag','steve'],
+['happy','africa']
 ];
 
 function init(){
     createImages();
     renderGallery();
+    renderWordCloud();
 }
 function createImg(id) {
     return {
@@ -28,7 +33,7 @@ function createImg(id) {
     }
 }
 function createImages() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 14; i++) {
         let img = createImg(gNextId);
         img.keywords = gKeyWords[i];
         gNextId++;
