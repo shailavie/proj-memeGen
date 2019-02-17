@@ -5,7 +5,7 @@ var gImgId;
 var gMemeImgSrc;
 var gIsMemeReady;
 var gEditableTextId;
-const PROPS_COUNT = 15;
+const PROPS_COUNT = 16;
 
 
 //Init
@@ -59,8 +59,6 @@ function renderLines() {
 }
 
 function getLineStrHtml(line) {
-	// <div class="${line.id}" data-id="${line.id}">
-	// contenteditable="true" 
 	var strHtml = `
 			<input 
 			 class="txt" 
@@ -78,7 +76,6 @@ function getLineStrHtml(line) {
 			 		 width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
              >
 			 `
-	//  </div>
 	return strHtml
 }
 
@@ -109,8 +106,6 @@ function addBorder(that){
 }
 
 function getPropStrHtml(prop) {
-	//  //markEditable(${prop.id}); extracted from 3 lines down
-	// contenteditable="true" 
 	var strHtml = `
 			<img 
 				class="prop"
@@ -125,7 +120,6 @@ function getPropStrHtml(prop) {
 				src="img/addons/${prop.srcId}.png"
 			>
 			`
-	// </div>
 	return strHtml;
 }
 
@@ -154,17 +148,16 @@ function showTextControls(element) {
 	var style = `left: ${txtPos.left - 20}px; top: ${txtPos.top - 70}px`;
 	elController.style.cssText = style;
 	elController.classList.remove('hide')
-	// <label><input type="color" class="btn-txt-ctrl color-picker" onchange="onChangeColorText(this.value)"></label>
 }
 
-
+ 
 
 function showPropControls(element) {
 	var strHtml = `
 			<button class="btn-txt-ctrl" onmousedown="onChangeSizeProp(${element.id},5)" title="Increase size"><i class="fas fa-plus"></i></button>
 			<button class="btn-txt-ctrl" onmousedown="onChangeSizeProp(${element.id},-5)" title="Decrease size"><i class="fas fa-minus"></i></button>
-			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},5)" title="Rotate">⭮</button>
-			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},-5)" title="Rotate">⭯</button>
+			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},5)" title="Rotate">⤾</button>
+			<button class="btn-txt-ctrl" onmousedown="onRotateProp(${element.id},-5)" title="Rotate">⤿</button>
 			<button class="btn-txt-ctrl" value='center' onclick="onCenterPropOnImg(${element.id})"title="Align center"><i class="fas fa-align-center"></i></button>
 			<button class="btn-txt-ctrl" onclick="onDeleteItem(${element.id},'props')" title="Delete"><i class="fas fa-trash" ></i></button>
 			<div class="close-controls" data-modal="prop-controllers" onclick="hideModal('.prop-controllers'); removeAllBorders()" title="close"><i class="fas fa-times"></i></div>`
@@ -322,7 +315,7 @@ function generateMeme() {
 		document.querySelector('.canvas-controls').classList.add('hide')
 		document.querySelector('.add-text').classList.remove('hide')
 		document.querySelector('.add-prop').classList.remove('hide')
-		document.querySelector('.generateBtn').innerText = 'Save Texts'
+		document.querySelector('.generateBtn').innerHTML = '<i class="fas fa-palette"></i><br/>Add Drawing'
 		document.querySelector('.download').classList.add('hide')
 		document.querySelector('.fb-share').classList.add('hide')
 	} else {
@@ -337,7 +330,7 @@ function generateMeme() {
 		document.querySelector('.canvas-controls').classList.remove('hide')
 		document.querySelector('.download').classList.remove('hide')
 		document.querySelector('.fb-share').classList.remove('hide')
-		document.querySelector('.generateBtn').innerText = 'Edit Texts'
+		document.querySelector('.generateBtn').innerHTML = '<i class="fas fa-edit"></i><br/>Edit Texts'
 	}
 	gIsMemeReady = !gIsMemeReady;
 }

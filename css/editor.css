@@ -13,16 +13,15 @@
 }
 
 
-@media (min-width: 540px){
+ 
     body {
         background-color: var(--main-bg-color);
     }
 
-}
+
 
 :root {
     --main-bg-color: #e84c3d;
-    /* --mobile-width: 540px; */
   }
 
 /* Layout */
@@ -37,14 +36,15 @@ h1 ,h5 {
     font-family: 'Geostar Fill';
     letter-spacing: 2px;
     color:white;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     text-decoration: none;
     text-align: center;
 }
 h1 {
     font-size: 20px;
+    margin: 20px 0;
 }
-@media (min-width: 540px){
+@media (min-width: 680px){
     h1 ,h5 {
         text-align: left;
     }
@@ -69,7 +69,7 @@ h1 {
     grid-template-rows: auto auto 1fr 70px;
     grid-template-columns: 100%;
 }
-@media (min-width: 540px){
+@media (min-width: 680px){
     .container {
         grid-template-rows: auto auto 1fr 80px;
         grid-template-columns: 1fr;
@@ -89,7 +89,7 @@ h1 {
     text-align: center;
     padding-bottom: 10px;
 } 
-@media (min-width: 540px){
+@media (min-width: 680px){
     .app-header {
         flex-direction: row;
     }
@@ -100,7 +100,7 @@ h1 {
     justify-content: center;
     text-align: center;
 }
-@media (min-width: 540px){
+@media (min-width: 680px){
     .header-inner-container {
         flex-direction: column;
     }  
@@ -111,6 +111,14 @@ h1 {
 
 .app-menu input, select {
     cursor: pointer;
+    font-size: 10px;
+    margin: 0 5px;
+}
+@media (min-width: 680px){
+    .app-menu input, select {
+        font-size: 16px;
+        margin: 0 10px;
+    }
 }
 
 .app-menu select {
@@ -127,9 +135,9 @@ h1 {
 .logo {
     width: 70px;
     height: 70px;
-    /* margin: 5px 15px; */
+    margin-top: 15px;
 }
-@media (min-width: 540px){
+@media (min-width: 680px){
     .logo {
         min-width: 80px;
         min-height: 80px;
@@ -139,7 +147,7 @@ h1 {
 }
 }
 .btn {
-    height: 60px;
+    height: 70px;
     width: auto;
     border: 2px solid white;
     border-radius: 4px;
@@ -156,7 +164,7 @@ h1 {
     transition: all .3s;
 }
 
-@media (min-width: 540px) {
+@media (min-width: 680px) {
     .btn {
         font-size: 20px;
         padding: 10px 20px;
@@ -184,7 +192,7 @@ h1 {
     justify-content:space-evenly;
     flex-direction: row;
     width: auto;
-    height: 50px;
+    height: 77px;
     background-color: whitesmoke;
     color: black;
     border-radius: 5px;
@@ -197,7 +205,6 @@ h1 {
 .canvas-controllers {
     display: flex;
     align-items: center;
-    padding: 20px;
     justify-content:space-evenly;
     flex-direction: row;
     width: auto;
@@ -208,6 +215,12 @@ h1 {
     z-index: 2;
     border: 1px solid black;
     transition-duration: all 0.5s;
+}
+@media (min-width: 680px) {
+    .canvas-controllers {
+        margin-top: 20px 0;
+        margin-left: 100px;
+    }
 }
 
 
@@ -220,15 +233,21 @@ h1 {
 }
 
 
+
+
 .btn-txt-ctrl {
-    height: 30px;
-    margin: 0 2px;
-    width: auto;
-    font-size: 10px;
+    display: flex;
+    margin: 0 4px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 50px;
+    min-width: 50px;
+    font-size: 12px;
     font-family: Arial, Helvetica, sans-serif;
     border-radius: 5px;
     color:white;
-    background-color: #6a474d;
+    background-color: #502d32;
     cursor: pointer;
     transition-duration: all 0.3s;
 }
@@ -240,21 +259,27 @@ h1 {
 
 .close-controls {
     display: flex;
+    padding-top: 6px;
+    /* flex-direction: column; */
     z-index: 3;
     align-items: center;
     text-align: center;
     justify-content: center;
-    font-size: 10px;
-    height: 20px;
-    width: 20px;
+    font-size: 14px;
+    height: 30px;
+    width: 30px;
     background-color: black;
     color: white;
     border-radius: 50px;
     position: absolute;
     border: 1px solid white;
-    top: -10px;;
+    top: -10px;
     right: -10px;
     cursor: pointer;
+}
+
+.close-controls:hover {
+    background-color: rgb(63, 60, 60); 
 }
 
 .prop-container {
@@ -275,7 +300,7 @@ h1 {
     border:1px solid black;
     padding: 20px;
 }
-@media (min-width: 540px){
+@media (min-width: 680px){
     .prop-container {
         grid-template-columns: repeat(5,150px);
         grid-template-rows: repeat(3,150px);
@@ -296,19 +321,55 @@ h1 {
 }
 
 .color-picker {
-    width: 40px;
+    width: 20px;
 }
+@media (min-width: 680px){
+    .color-picker {
+        width: 40px;
+    }
+}
+
 
 label, option {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
+    font-size: 10px;
     color:white;
 }
-
-
+@media (min-width: 680px){
+    label, option {
+        font-size: 16px;
+    }
+}
 
 .btn-sm {
     font-size: 16px;
+}
+
+
+.btn-canvas-ctrl {
+    display: flex;
+    margin: 0 4px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 40px;
+    min-width: 40px;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 5px;
+    color:white;
+    background-color: #502d32;
+    cursor: pointer;
+    transition-duration: all 0.3s;
+}
+@media (min-width: 680px){
+    .btn-canvas-ctrl {
+        flex-direction: row;
+        display: inline-flex;
+        height: 50px;
+        min-width: 50px;
+        font-size: 16px;
+    }
 }
 
 .download {
@@ -470,7 +531,7 @@ label, option {
 }
 
 
-@media (min-width: 540px){
+@media (min-width: 680px){
     body {
         /* background-color: yellow; */
     }
@@ -483,4 +544,8 @@ label, option {
 
 .border {
     border: 2px dashed white ;
+}
+
+i {
+    margin-bottom: 5px;
 }
