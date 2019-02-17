@@ -26,7 +26,7 @@
                     <button class="btn add-text" onclick="onAddText()">Add Text</button>
                     <button class="btn add-prop" onclick="onAddProps()">Add Props</button>
                     <button class="btn" onclick="window.location.href='index.html'">Change Image&nbsp;<i class="fas fa-exchange-alt"></i></button>
-                    <div class="btn flex center-all download hide"><a onclick="onDownloadImage(this)">Download</a></div>
+                    <div class="btn flex center-all download hide"><a style="text-decoration:none; color:white" onclick="onDownloadImage(this)">Download</a></div>
                     <form action="" method="POST" enctype="multipart/form-data" onsubmit="uploadImg(this, event)">
                         <input name="img" id="imgData" type="hidden"/>
                         <button class="btn flex center-all fb-share hide" type="submit">Publish</button>
@@ -81,9 +81,9 @@
     
     <script src="lib/jquery/jquery.js"></script>
     <script src="js/util.js"></script>
-    <script src="js/user-controller.js"></script>
     <script src="js/canvas-controller.js"></script>
     <script src="js/app-controller.js"></script>
+    <script src="js/editor-service.js"></script>
     <script src="js/editor.js"></script>
     <script src="js/drag-drop-functions.js"></script>
 

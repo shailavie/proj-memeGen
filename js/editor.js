@@ -1,12 +1,10 @@
 'use strict'
 
 //Model
-// var gMemeImgId = getImgId()
 var gMemeImgSrc;
 var gIsMemeReady;
 var gEditableTextId;
-var gPropsCount = 13;
-// var gImgs = [{ id: 1, url: 'img/popo.jpg', keywords: ['happy'] }];
+const PROPS_COUNT = 15;
 var gMeme = {
 	selectedImgId: getImgId(),
 	props: [],
@@ -298,7 +296,7 @@ function onChangeFontText(selectedFont) {
 function onAddProps() {
 	var elPropCnt = document.querySelector('.prop-container')
 	var strHtml = ''
-	for (let i = 0; i < gPropsCount; i++) {
+	for (let i = 0; i < PROPS_COUNT; i++) {
 		strHtml +=
 			`<img onclick="onAddProp(this)" class="prop-gallery" type="props" id="${i}" src="img/addons/${i}.png" >`
 	}
