@@ -230,7 +230,7 @@ aside {
 
 @media (max-width: 1000px){
 
-    }
+    
     .gallery-grid {
         grid-template-rows: repeat(5,0.25fr);
         grid-template-columns: repeat(5,0.5fr); 
