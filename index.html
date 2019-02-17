@@ -12,7 +12,7 @@
 
 </head>
 
-<body onload="init()">
+<body onmouseover="console.log(event)" onload="init()">
     <div class="website-grid grid">
 
         <header>
@@ -32,10 +32,23 @@
                     <a href="#" class="toggle-display-btn" onclick="onToggleDisplay()">Change Display</a>
                 </li>
                 <li>
-                    <a href="#upload">UPLOAD IMAGE</a>
-                    <form class="hide"  enctype="multipart/form-data" action="/upload/image" method="post">
-                        <input id="upload" type="file" />
-                    </form>
+                    <!-- <a href="#upload">UPLOAD IMAGE</a>
+                    <form   enctype="multipart/form-data" action="/upload/image" method="post">
+                        <input id="upload" type="/hidden" />
+                    </form> -->
+                    <!-- <input type="file" name="image"/> -->
+
+                    <!-- <form action="" method="POST" enctype="multipart/form-data" onsubmit="uploadImg(this, event)">
+                      <input name="img" id="imgData" type="hidden"/>
+                      <button type="submit">Publish</button>
+                    </form> -->
+                    <div class="image-upload gallery-tool">
+                            <label for="add_meme" class="upload-meme-btn"><i class="fas fa-upload"></i>Upload Meme</label>
+                            <section class="add-meme-section hide">
+                                <input type="file" class="" id="add_meme" name="add_meme" accept="image/png, image/jpeg"
+                                    onchange="onHandleUpload()">
+                            </section>
+                        </div>
                 </li>
                 <li>
                     <a href="#about-us" class="about-link" onclick="onToggleInfo()">ABOUT US</a>
@@ -46,9 +59,9 @@
         <section class="flex  space-between">
             <h2>Choose Meme </h2>
             <div class="searchbox-container">
-                <input class="searchBox" onkeypress="onSearchStr()" type="search" name="search"
+                <input class="searchBox " onkeypress="onSearchStr()" type="search" name="search"
                     onfocus="if(this.value !== '') { this.value = ''; }" placeholder="Search...">
-                <label for="search"><i onclick="onSearchStr()" class="fa fa-search searchIcon"></i></label>
+                <label for="search" <span></label><i onclick="onSearchStr()" class="fa fa-search searchIcon"></i></span> </label>
             </div>
         </section>
         <aside class="word-cloud-container grid">
@@ -76,7 +89,7 @@
                     <div class="card">
                         <a href="http://"> <img src="./img/team/shai.jpg" alt="Shai's gallery"></a>
                         <div class="contact">
-                            <a href="http://"><i class="fa fa-facebook"></i></a>
+                            <a href="https://www.facebook.com/profile.php?id=650473527&ref=br_rs"><i class="fa fa-facebook"></i></a>
                             <a href="http://"><i class="fa fa-linkedin"></i></a>
                             <a href="http://"><i class="fa fa-envelope-square"></i></a>
                             <a href="http://"><i class="fa fa-phone"></i></a>
@@ -84,10 +97,10 @@
                     </div>
                     <div class="card">
                         <a href="https://itai-rozen.github.io/git-ex/"> <img src=" ./img/team/itai.jpg"
-                            alt="Itai's gallery"></a>
+                                alt="Itai's gallery"></a>
                         <div class="contact">
-                            <a href="http://"><i class="fa fa-facebook"></i></a>
-                            <a href="http://"><i class="fa fa-linkedin"></i></a>
+                            <a href="https://www.facebook.com/itai.rozen?ref=br_rs"><i class="fa fa-facebook"></i></a>
+                            <a href="https://il.linkedin.com/in/itai-rozen-394b62149"><i class="fa fa-linkedin"></i></a>
                             <a href="http://"><i class="fa fa-envelope-square"></i></a>
                             <a href="http://"><i class="fa fa-phone"></i></a>
                         </div>
@@ -95,7 +108,7 @@
                 </div>
 
             </div>
-        </div> 
+    </div>
     </main>
 
     <footer>
@@ -109,7 +122,7 @@
     <script src="lib/bootstrap/bootstrap.js"></script>
     <script src="js/app-controller.js"></script>
     <script src="js/editor.js"></script>
-    <!-- <script src="js/autocomplete-service.js"></script> -->
+    <script src="js/autocomplete-service.js"></script>
     <script src="js/gallery-service.js"></script>
     <!-- <script src="js/app-service.js"></script> -->
 </body>

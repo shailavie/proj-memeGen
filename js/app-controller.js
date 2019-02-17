@@ -4,23 +4,10 @@ var gSearchedWords = (!loadFromLocalStorage('searchesCountMap')) ? {} : loadFrom
 var gSlideIndex = 0;
 var gToggleDisplay = true;
 
-function onToggleDisplay() {
-    gToggleDisplay = !gToggleDisplay;
-    renderGallery();
-}
 
-function onToggleInfo(){
-    let elGallery = document.querySelector('.gallery-container');
-    let elAbout = document.querySelector('.about-us');
-    let elAboutLink = document.querySelector('.about-link');
-    if (elAboutLink.innerText === 'ABOUT US'){
-        elAboutLink.innerText = 'GALLERY';
-    } else  elAboutLink.innerText = 'ABOUT US';
-    elGallery.classList.toggle('hide');
-    elAbout.classList.toggle('hide');
-}
 
 function renderGallery() {
+
     if (gToggleDisplay) {
 
         let elGallery = document.querySelector('.gallery-container');
@@ -31,11 +18,10 @@ function renderGallery() {
         elCarouselBtn[1].classList.add('hide');
         let strHtml = '';
         gImgs.map(function (img) {
-            strHtml += `<a href="editor.html?${img.id}"><img class="my-slides" onclick=onSaveImgSrc(${img.id}) src="${img.url}" alt="">
+            strHtml += `<a href="editor.html?${img.id}"><img class="my-slides"  src="${img.url}" alt="">
             <div class="img-details flex wrap">Keywords: ${img.keywords.join(', ')}</div></a>`;
         })
-
-        $(elGallery).html(strHtml);
+        elGallery.innerHTML=strHtml;
     }
     else {
         showDivs(gSlideIndex);
@@ -63,26 +49,33 @@ function showDivs(slideNum) {
     elGallery.classList.remove('gallery-grid');
 
     let img = gImgs[slideNum];
-    let strHtml = `<a href="editor.html?${img.id}"><img class="my-slides carousel" onclick=onSaveImgSrc(${img.id}) src="${img.url}" alt="">
+    let strHtml = `<a href="editor.html?${img.id}"><img class="my-slides carousel"  src="${img.url}" alt="">
     <div class="img-details flex wrap">Keywords: ${img.keywords.join(', ')}</div></a>`;
     $(elGallery).html(strHtml);
 }
 
-
-function onSaveImgSrc(url) {
-    console.log('url ', url)
-    gImgSrc = url;
-    console.log('gImgSrc ', gImgSrc);
+function onToggleDisplay() {
+    gToggleDisplay = !gToggleDisplay;
+    renderGallery();
 }
 
-function getImgSrc() {
-    return gImgSrc;
+function onToggleInfo() {
+    let elGallery = document.querySelector('.gallery-container');
+    let elAbout = document.querySelector('.about-us');
+    let elAboutLink = document.querySelector('.about-link');
+    if (elAboutLink.innerText === 'ABOUT US') {
+        elAboutLink.innerText = 'GALLERY';
+    } else elAboutLink.innerText = 'ABOUT US';
+    elGallery.classList.toggle('hide');
+    elAbout.classList.toggle('hide');
 }
+
 
 
 
 function onSearchStr() {
     let elSearch = document.querySelector('.searchBox').value;
+    autocomplete(document.querySelector('.searchBox'), gKeyWords.flat());
     if (elSearch === '') {
         renderGallery();
         return;
@@ -107,7 +100,7 @@ function renderFoundImage(i) {
     let images = getImages();
     gToggleDisplay = true;
     renderGallery();
-    let strHtml = `<a href="editor.html?${images[i].id}"><img class="my-slides" onclick=onSaveImgSrc(${images[i].id}) src="${images[i].url}" alt="">
+    let strHtml = `<a href="editor.html?${images[i].id}"><img class="my-slides"  src="${images[i].url}" alt="">
     <div class="img-details">Keywords: ${images[i].keywords.join(', ')}</div></a>`;
     document.querySelector('.gallery-container').innerHTML = strHtml;
 }
@@ -120,7 +113,7 @@ function renderWordCloud() {
     let color = getRandomColor();
     let searches = (!loadFromLocalStorage('searches')) ? [] : loadFromLocalStorage('searches');
     let strHtmls = (!loadFromLocalStorage('html-strs')) ? [] : loadFromLocalStorage('html-strs');
-    let strHtml = `<span><font size="${gSearchedWords[str]}" 
+    let strHtml = `<span onclick="filterFromCloud('${str}')"><font size="${gSearchedWords[str]}" 
     color="${color}">${str}</font></span>`;
 
     let idx = searches.findIndex(function (search) {
@@ -138,8 +131,24 @@ function renderWordCloud() {
     elCloud.innerHTML = strHtmls.join(' ');
 }
 
+function filterFromCloud(str) {
+    console.log(document.querySelector('.searchBox').innerHTML);
+    document.querySelector('.searchBox').value = str;
+    console.log(document.querySelector('.searchBox').value);
+    onSearchStr();
+}
+
+/// UPLOAD 
 
 
-
-
-
+function onHandleUpload() {
+    let str = prompt('Describe your memein two words');
+    str = str.toLowerCase();
+    let keywords = str.split(' ');
+    const selectedFile = document.getElementById('add_meme').files[0];
+    const objectURL = window.URL.createObjectURL(selectedFile);
+    console.log(objectURL);
+    addMeme(objectURL, keywords);
+    createImages();
+    renderGallery();
+}

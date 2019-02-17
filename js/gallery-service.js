@@ -49,4 +49,12 @@ function getImages(){
     return gImgs;
 }
 
+function addMeme(url,keyWords){
+    var newImage = createImg(gNextId);
+    console.log(newImage);
+    newImage.url = url;
+    gKeyWords.push(keyWords);
+    newImage.keywords = keyWords; 
+}
+
 
