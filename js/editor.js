@@ -116,7 +116,7 @@ function getLineStrHtml(line) {
 			 		 width: ${line.width}px; font-size:${line.size}px; top:${line.top}px; left:${line.left}px"
              >
 			 `
-            //  </div>
+	//  </div>
 	return strHtml
 }
 
@@ -137,7 +137,7 @@ function getPropStrHtml(prop) {
 				src="img/addons/${prop.srcId}.png"
 			>
 			`
-			// </div>
+	// </div>
 	return strHtml;
 }
 
@@ -182,7 +182,7 @@ function showTextControls(element) {
 	elController.classList.remove('hide')
 	// <label><input type="color" class="btn-txt-ctrl color-picker" onchange="onChangeColorText(this.value)"></label>
 }
- 
+
 
 //
 function showPropControls(element) {
@@ -203,15 +203,15 @@ function showPropControls(element) {
 
 
 
-function onChangeSizeProp(element,value) {
-	var elementId = element.id+''
+function onChangeSizeProp(element, value) {
+	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
 	gMeme['props'][itemIdx].width += value
 	renderItems()
 }
 
-function onRotateProp(element,value) {
-	var elementId = element.id+''
+function onRotateProp(element, value) {
+	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, 'props')
 	gMeme['props'][itemIdx].rotate += value
 	renderItems()
@@ -219,7 +219,7 @@ function onRotateProp(element,value) {
 
 
 function onDeleteItem(element, type) {
-	var elementId = element.id+''
+	var elementId = element.id + ''
 	var itemIdx = getItemIdxByIdAndType(elementId, type)
 	gMeme[type].splice(itemIdx, 1)
 	var modalClass = (type === 'txts') ? '.text-controllers' : '.prop-controllers';
@@ -306,7 +306,7 @@ function onAddProps() {
 	elPropCnt.innerHTML = strHtml;
 	elPropCnt.classList.remove('hide')
 }
- 
+
 
 function onAddProp(prop) {
 	var prop = {
@@ -426,10 +426,38 @@ function onDownloadImage(elLink) {
 	}
 	setTimeout(() => {
 		elLink.href = gCanvas.toDataURL()
+		console.log('img url', elLink.href)
 		var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
 		elLink.download = `${name}.jpg`
 	}, 500);
 }
+
+function onShareImage(elFbLink) {
+	console.log(elFbLink)
+	postCanvasToFacebook()
+	// if (!gCanvas) {
+	// 	generateMeme()
+	// }
+	// setTimeout(() => {
+	// 	elFbLink.href = gCanvas.toDataURL()
+	// 	console.log('img url', elFbLink.href)
+	// 	// var name = gMeme.txts[0].line.replace(/[^a-zA-Z0-9]/, '').toLowerCase();
+	// 	// elLink.download = `${name}.jpg`
+	// }, 500);
+}
+
+function postCanvasToFacebook() {
+	var data = gCanvas.toDataURL("image/png");
+	var encodedPng = data.substring(data.indexOf(',') + 1, data.length);
+	var decodedPng = Base64Binary.decode(encodedPng);
+	FB.getLoginStatus(function (response) {
+		if (response.status === "connected") {
+			postImageToFacebook(response.authResponse.accessToken, "heroesgenerator", "image/png", decodedPng, "www.heroesgenerator.com");
+		}
+	})
+}
+
+
 
 function onDownloadImageNow(elLink) {
 	generateMeme();
