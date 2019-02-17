@@ -305,6 +305,8 @@ label, option {
     color:white;
 }
 
+
+
 .btn-sm {
     font-size: 16px;
 }
@@ -472,4 +474,13 @@ label, option {
     body {
         /* background-color: yellow; */
     }
+}
+
+.share-link {
+    text-decoration:none; 
+    color:white";
+} 
+
+.border {
+    border: 2px dashed white ;
 }
