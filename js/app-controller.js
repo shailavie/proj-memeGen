@@ -20,7 +20,6 @@ function renderGallery() {
         gImgs.map(function (img) {
             strHtml += `<a href="editor.html?${img.id}"><img class="my-slides"  src="${img.url}" alt="">
             <div class="img-details flex wrap">Keywords: ${img.keywords.join(', ')}</div></a>`;
-            console.log(img);
         })
         elGallery.innerHTML=strHtml;
     }

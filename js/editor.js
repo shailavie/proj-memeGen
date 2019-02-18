@@ -24,7 +24,7 @@ function init() {
 
 // This function renders the chosen image, so we can calculate where to position the lines based on its size
 function renderImg() {
-	var strHtml = `<img class="img-container" style="z-index:-1"  id="meme-img" src="img/${gImgId}.jpg" alt="">`
+	var strHtml = `<img class="img" style="z-index:-1"  id="meme-img" src="img/${gImgId}.jpg" alt="">`
 	document.querySelector('.meme-container').innerHTML = strHtml;
 }
 
@@ -34,7 +34,7 @@ function renderItems() {
 	document.querySelector('.meme-container').innerHTML = ''
 	var strHtml = renderLines()
 	strHtml += renderProps()
-	strHtml += `<img class="img-container" id="meme-img" src="img/${gImgId}.jpg" alt="">`
+	strHtml += `<img class="img" id="meme-img" src="img/${gImgId}.jpg" alt="">`
 	document.querySelector('.meme-container').innerHTML = strHtml;
 }
 
@@ -145,7 +145,12 @@ function showTextControls(element) {
 	var txtPos = element.getBoundingClientRect()
 	var elController = document.querySelector('.text-controllers')
 	elController.innerHTML = strHtml;
-	var style = `left: ${txtPos.left - 20}px; top: ${txtPos.top - 70}px`;
+	if (window.innerWidth > 680) {
+		var style = `left: ${txtPos.left - 100}px; top: ${txtPos.top - 90}px`;
+	} else {
+		var elCanvasControllersPos = document.querySelector('.canvas-controllers').getBoundingClientRect();
+		var style = `left: ${window.innerWidth/2-180}px; top: ${elCanvasControllersPos.top}px`;
+	}
 	elController.style.cssText = style;
 	elController.classList.remove('hide')
 }
@@ -164,7 +169,12 @@ function showPropControls(element) {
 	var propPos = element.getBoundingClientRect()
 	var elController = document.querySelector('.prop-controllers')
 	elController.innerHTML = strHtml;
-	var style = `left: ${propPos.left - 20}px; top: ${propPos.top - 70}px`;
+	if (window.innerWidth > 680) {
+		var style = `left: ${propPos.left - 100}px; top: ${propPos.top - 90}px`;
+	} else {
+		var elCanvasControllersPos = document.querySelector('.canvas-controllers').getBoundingClientRect();
+		var style = `left: ${window.innerWidth/2-180}px; top: ${elCanvasControllersPos.top}px`;
+	}
 	elController.style.cssText = style;
 	elController.classList.remove('hide')
 }
@@ -312,7 +322,7 @@ function generateMeme() {
 	if (gIsMemeReady) {
 		document.querySelector('.meme-container').classList.remove('hide')
 		document.querySelector('.canvas-container').classList.add('hide')
-		document.querySelector('.canvas-controls').classList.add('hide')
+		document.querySelector('.canvas-controllers').classList.add('invisible')
 		document.querySelector('.add-text').classList.remove('hide')
 		document.querySelector('.add-prop').classList.remove('hide')
 		document.querySelector('.generateBtn').innerHTML = '<i class="fas fa-palette"></i><br/>Add Drawing'
@@ -327,7 +337,7 @@ function generateMeme() {
 		document.querySelector('.add-text').classList.add('hide')
 		document.querySelector('.add-prop').classList.add('hide')
 		document.querySelector('.canvas-container').classList.remove('hide')
-		document.querySelector('.canvas-controls').classList.remove('hide')
+		document.querySelector('.canvas-controllers').classList.remove('invisible')
 		document.querySelector('.download').classList.remove('hide')
 		document.querySelector('.fb-share').classList.remove('hide')
 		document.querySelector('.generateBtn').innerHTML = '<i class="fas fa-edit"></i><br/>Edit Texts'

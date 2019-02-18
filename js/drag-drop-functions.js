@@ -6,8 +6,9 @@
         // var elId = `#${gEditableTextId}`
         // console.log(elId)
         // var elTextPos = document.querySelector(elId).getBoundingClientRect();
-        // console.log('elTextPos', elTextPos)
-
+        // console.log('elImgPos', elImgPos)
+var elPost = elmnt.getBoundingClientRect();
+console.log(elPost)
 	// var text = document.querySelector(elId);
   
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -16,7 +17,6 @@
     function dragMouseDown(e) {
       e = e || window.event;
       // e.preventDefault(); 
-      
       // get the mouse cursor position at startup:
       pos3 = e.clientX;
       pos4 = e.clientY;
@@ -28,7 +28,6 @@
     function elementDrag(e) {
       e = e || window.event;
       e.preventDefault();
-    //   if (e.clientX > elImgPos.right-elTextPos.width || e.clientX < elImgPos.left-elTextPos.width || e.clientY > elImgPos.bottom-elTextPos.height || e.clientY < elImgPos.top-elTextPos.height) return
       if (e.clientX > elImgPos.right-100  || e.clientX < elImgPos.left+100  || e.clientY > elImgPos.bottom-20 || e.clientY < elImgPos.top+20) return
       // calculate the new cursor position:
       pos1 = pos3 - e.clientX;
