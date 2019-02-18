@@ -50,12 +50,8 @@ function renderProps() {
 
 
 function renderLines() {
-	var strHtml = ''
 	var lines = getAllObjs('txts')
-	lines.forEach(function (line) {
-		strHtml += getLineStrHtml(line);
-	})
-	return strHtml;
+	return lines.map(line => getLineStrHtml(line)).join('')
 }
 
 function getLineStrHtml(line) {
